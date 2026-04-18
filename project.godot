@@ -27,6 +27,7 @@ buses/default_bus_layout="uid://do4dfd4nxvapc"
 
 Global="*res://Global.gd"
 CombatFeedback="*res://utility/combat_feedback.gd"
+NetworkManager="*res://systems/network_manager.gd"
 
 [display]
 
