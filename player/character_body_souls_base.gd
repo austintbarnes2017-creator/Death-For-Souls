@@ -197,8 +197,6 @@ func change_state(new_state):
 
 			
 func _physics_process(_delta):
-	super._physics_process(_delta)
-	
 	# Handle fly movement when fly mode is enabled
 	if fly_mode_enabled:
 		var fly_speed = 10.0
