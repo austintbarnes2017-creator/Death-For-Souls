@@ -1,0 +1,88 @@
+[gd_scene load_steps=2 format=3 uid="uid://eaw8x3k8m5o6"]
+
+[ext_resource type="Script" path="res://ui/admin_panel.gd" id="1_admin_panel"]
+[ext_resource type="Theme" path="res://ui/default_theme.tres" id="2_theme"]
+
+[node name="AdminPanel" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("1_admin_panel")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.05, 0.05, 0.1, 1)
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -300.0
+offset_top = -250.0
+offset_right = 300.0
+offset_bottom = 250.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = 20.0
+offset_right = -20.0
+offset_bottom = -20.0
+
+[node name="Title" type="Label" parent="Panel/VBoxContainer"]
+layout_mode = 2
+text = "Admin Panel"
+theme = ExtResource("2_theme")
+horizontal_alignment = 1
+
+[node name="PlayerManagement" type="VBoxContainer" parent="Panel/VBoxContainer"]
+layout_mode = 2
+
+[node name="PlayerManagementLabel" type="Label" parent="Panel/VBoxContainer/PlayerManagement"]
+layout_mode = 2
+text = "Player Management"
+
+[node name="PlayerNameInput" type="LineEdit" parent="Panel/VBoxContainer/PlayerManagement"]
+layout_mode = 2
+placeholder_text = "Enter player name..."
+
+[node name="BanButton" type="Button" parent="Panel/VBoxContainer/PlayerManagement"]
+layout_mode = 2
+text = "Ban Player"
+
+[node name="ToolsSection" type="VBoxContainer" parent="Panel/VBoxContainer"]
+layout_mode = 2
+
+[node name="ToolsLabel" type="Label" parent="Panel/VBoxContainer/ToolsSection"]
+layout_mode = 2
+text = "Admin Tools"
+
+[node name="FlyButton" type="Button" parent="Panel/VBoxContainer/ToolsSection"]
+layout_mode = 2
+text = "Toggle Fly Mode"
+
+[node name="GiveAxeButton" type="Button" parent="Panel/VBoxContainer/ToolsSection"]
+layout_mode = 2
+text = "Give Axe"
+
+[node name="GiveSwordButton" type="Button" parent="Panel/VBoxContainer/ToolsSection"]
+layout_mode = 2
+text = "Give Sword"
+
+[node name="GiveShieldButton" type="Button" parent="Panel/VBoxContainer/ToolsSection"]
+layout_mode = 2
+text = "Give Shield"
+
+[node name="CloseButton" type="Button" parent="Panel/VBoxContainer"]
+layout_mode = 2
+text = "Close Panel"

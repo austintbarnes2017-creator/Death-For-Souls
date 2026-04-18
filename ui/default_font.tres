@@ -1,0 +1,13 @@
+[gd_resource type="FontFile" format=3 uid="uid://default_font"]
+
+[resource]
+font_names = ["Arial"]
+fallbacks = []
+subpixel_positioning = 1
+msdf_pixel_range = 14
+msdf_size = 32
+multichannel_signed_distance_field = false
+force_autohinter = false
+hinting = 1
+oversampling = 0.0
+allow_system_fallback = true
