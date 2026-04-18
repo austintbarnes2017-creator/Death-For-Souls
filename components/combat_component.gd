@@ -58,7 +58,7 @@ func hit(_who: Node3D, _by_what: EquipmentResource) -> void:
 func block() -> void:
 	player.current_state = 2 # state.STATIC_ACTION
 	player.block_started.emit()
-	var anim_len = player.anim_length if player.has_variable("anim_length") else 0.5
+	var anim_len = player.anim_length if "anim_length" in player else 0.5
 	await get_tree().create_timer(anim_len).timeout
 	if player.current_state == 2: # state.STATIC_ACTION
 		player.current_state = 3 # state.DYNAMIC_ACTION
@@ -67,7 +67,7 @@ func parry() -> void:
 	player.current_state = 2 # state.STATIC_ACTION
 	can_be_hurt = false
 	player.parry_started.emit()
-	var anim_len = player.anim_length if player.has_variable("anim_length") else 0.5
+	var anim_len = player.anim_length if "anim_length" in player else 0.5
 	await get_tree().create_timer(anim_len).timeout
 	if player.current_state == 2: # state.STATIC_ACTION
 		player.current_state = 1 # state.FREE
@@ -77,7 +77,7 @@ func hurt() -> void:
 	player.current_state = 2 # state.STATIC_ACTION
 	can_be_hurt = false
 	player.hurt_started.emit()
-	var anim_len = player.anim_length if player.has_variable("anim_length") else 0.5
+	var anim_len = player.anim_length if "anim_length" in player else 0.5
 	await get_tree().create_timer(anim_len).timeout
 	if not is_dead:
 		if player.current_state == 2: # state.STATIC_ACTION
