@@ -51,7 +51,6 @@ func _on_damage_signal(_by_what):
 		show_timer.start()
 	var damage_power = _by_what.power
 	current_health -= damage_power
-	
 	# Combat Feedback
 	if hit_reporting_node is CharacterBodySoulsBase:
 		# Player took damage
@@ -65,7 +64,6 @@ func _on_damage_signal(_by_what):
 		var cam = get_viewport().get_camera_3d()
 		if cam and cam.get_parent() is FollowCam:
 			cam.get_parent().add_trauma(0.2)
-
 	health_updated.emit(current_health)
 	if current_health <= 0:
 		died.emit()

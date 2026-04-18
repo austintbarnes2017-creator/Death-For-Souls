@@ -44,7 +44,11 @@ func _on_death_started():
 		
 func request_oneshot(oneshot:String):
 	last_oneshot = oneshot
+<<<<<<< HEAD
 	set("parameters/" + oneshot + "/request", AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
+=======
+	set("parameters/" + oneshot + "/request",AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
+>>>>>>> son/main
 	
 func abort_oneshot(oneshot):
 	set("parameters/"+ str(oneshot) + "/request",AnimationNodeOneShot.ONE_SHOT_REQUEST_ABORT)

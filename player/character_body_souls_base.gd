@@ -1,26 +1,8 @@
-extends CharacterBody3D
-class_name CharacterBodySoulsBase
-
-## A semi-smart character controller. Will detect the current camera in use
-## and update control orientation to match it. Strafing will lock rotation to
-## to face camera perspective, except for dodging actions.
-
-## A LOT of actions here have signals delayed by timers. This is bad form.
-## It's bad for production but handy when protoyping new animations and you don't
-## want to hard bake where each trigger happens every time you change something.
-## Once player animations are finalized, add the signal triggers to the animations
-## and remove the timers in the functions here as needed. 
-
-## Manages all animations generally pulling info it needs from states and substates.
-@export var anim_state_tree : AnimationTreeSoulsBase
-#### When the anim_state_tree starts a new animatino, this variable updates with it's length
-@onready var anim_length = .5
-
-
-## default/1st camera is a follow cam.
-@onready var current_camera = get_viewport().get_camera_3d()
-## Aids strafe rotation when alternating between cameras
-@onready var orientation_target = current_camera
+## Character system integration
+var character_data: Dictionary = {}
+var fly_mode_enabled: bool = false
+var gravity_enabled: bool = true
+var original_gravity: float
 
 ## Sensing interactable objects, like ladders, doors, etc. 
 @export var interact_sensor : Node3D
@@ -134,6 +116,9 @@ enum state {SPAWN,FREE,STATIC_ACTION,DYNAMIC_ACTION,DODGE,SPRINT,LADDER,ATTACK}
 signal changed_state
 
 func _ready():
+	# Add to player group for admin panel access
+	add_to_group("player")
+	
 	if anim_state_tree:
 		anim_state_tree.animation_measured.connect(_on_animation_measured)
 
@@ -164,12 +149,19 @@ func _ready():
 	
 	add_child(attack_combo_timer)
 	attack_combo_timer.one_shot = true
+	attack_combo_timer.timeout.connect(_on_attack_combo_timeout)
 	
+	# Store original gravity
+	original_gravity = gravity
+	
+	# Load character data from file
+	load_character_data_from_file()
+		
 	if anim_state_tree:
 		await anim_state_tree.animation_measured
 	await get_tree().create_timer(anim_length).timeout
 	current_state = state.FREE
-	
+
 ## Makes variable changes for each state, primiarily used for updating movement speeds
 func change_state(new_state):
 	current_state = new_state
@@ -301,9 +293,10 @@ func _input(_event:InputEvent):
 			end_guard()
 	
 func apply_gravity(_delta):
-	if !is_on_floor() \
-	&& current_state != state.LADDER:
-		velocity.y -= gravity * _delta
+	if gravity_enabled and not fly_mode_enabled:
+		if !is_on_floor() \
+		&& current_state != state.LADDER:
+			velocity.y -= gravity * _delta
 		
 func free_movement():
 	# Get the movement orientation from the angles of the player to the camera.
@@ -582,6 +575,12 @@ func _on_gadget_equipment_changed(_new_gadget:EquipmentObject):
 
 func _on_inventory_item_used(_item):
 	current_item = _item
+
+func _on_attack_combo_timeout():
+	# Reset attack combo when timer expires
+	# This function is called when the attack combo timer times out
+	# Reset any combo-related state here
+	pass
 	
 func gadget_change():
 	current_state = state.DYNAMIC_ACTION
@@ -699,4 +698,114 @@ func death():
 	death_started.emit()
 	await get_tree().create_timer(3).timeout
 	get_tree().reload_current_scene()
+
+# Character system integration functions
+func load_character_data_from_file():
+	var character_file_path = "user://current_character.json"
+	if FileAccess.file_exists(character_file_path):
+		var file = FileAccess.open(character_file_path, FileAccess.READ)
+		if file:
+			var json_string = file.get_as_text()
+			file.close()
+			
+			var json = JSON.new()
+			var parse_result = json.parse(json_string)
+			
+			if parse_result == OK:
+				var char_info = json.data
+				load_character_data(char_info)
+			else:
+				print("Error parsing character data")
+
+func load_character_data(char_info: Dictionary):
+	character_data = char_info
+	
+	# Apply character data
+	if character_data.has("health"):
+		if health_system and health_system.has_method("set_health"):
+			health_system.set_health(character_data.health)
+	
+	# Apply gender-specific material
+	if character_data.has("material_path"):
+		apply_character_material(character_data.material_path)
+	
+	# Give starting weapons
+	if character_data.has("weapons"):
+		for weapon in character_data.weapons:
+			give_weapon(weapon)
+
+func apply_character_material(material_path: String):
+	if not ResourceLoader.exists(material_path):
+		print("Material not found: " + material_path)
+		return
+	
+	var material = load(material_path)
+	if not material:
+		print("Failed to load material: " + material_path)
+		return
+	
+	# Find the character mesh and apply material
+	var character_mesh = find_child("GeneralSkeleton", true, false)
+	if character_mesh:
+		# Apply material to all mesh instances in the skeleton
+		apply_material_to_children(character_mesh, material)
+	else:
+		print("Character skeleton not found")
+
+func apply_material_to_children(node: Node, material: Material):
+	for child in node.get_children():
+		if child is MeshInstance3D:
+			child.material_override = material
+		elif child.get_child_count() > 0:
+			apply_material_to_children(child, material)
+
+func set_admin_status(is_admin_enabled: bool):
+	# Update admin functionality based on admin status
+	if is_admin_enabled:
+		print("Admin privileges granted")
+	else:
+		print("Admin privileges revoked")
+		if fly_mode_enabled:
+			disable_fly_controls()
+
+# Admin functionality
+func give_weapon(new_weapon_type: String):
+	if not weapon_system:
+		print("No weapon system available")
+		return
+		
+	match new_weapon_type:
+		"axe":
+			# Create and add axe to weapon system
+			var axe_scene = preload("res://player/equipment_system/equipment/Ax.tscn")
+			var axe_instance = axe_scene.instantiate()
+			weapon_system.add_child(axe_instance)
+			print("Axe added to inventory")
+		"sword":
+			var sword_scene = preload("res://player/equipment_system/equipment/sword.tscn")
+			var sword_instance = sword_scene.instantiate()
+			weapon_system.add_child(sword_instance)
+			print("Sword added to inventory")
+		"shield":
+			var shield_scene = preload("res://player/equipment_system/equipment/shield.tscn")
+			var shield_instance = shield_scene.instantiate()
+			gadget_system.add_child(shield_instance)
+			print("Shield added to inventory")
+
+func set_gravity_enabled(enabled: bool):
+	gravity_enabled = enabled
+	if not enabled:
+		gravity = 0
+	else:
+		gravity = original_gravity
+
+func enable_fly_controls():
+	fly_mode_enabled = true
+	set_gravity_enabled(false)
+	print("Fly controls enabled")
+
+func disable_fly_controls():
+	fly_mode_enabled = false
+	set_gravity_enabled(true)
+	print("Fly controls disabled")
 		

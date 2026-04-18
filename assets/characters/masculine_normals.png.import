@@ -2,7 +2,11 @@
 
 importer="texture"
 type="CompressedTexture2D"
+<<<<<<< HEAD
 uid="uid://bxxugn16ur7du"
+=======
+uid="uid://dm3fkojdtsemf"
+>>>>>>> son/main
 path.s3tc="res://.godot/imported/masculine_normals.png-e0cd893811521f7886f3ebe0666ce195.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
@@ -27,7 +31,11 @@ compress/channel_pack=0
 mipmaps/generate=true
 mipmaps/limit=-1
 roughness/mode=1
+<<<<<<< HEAD
 roughness/src_normal="res://resources/characters/masculine_normals.png"
+=======
+roughness/src_normal="res://assets/characters/masculine_normals.png"
+>>>>>>> son/main
 process/channel_remap/red=0
 process/channel_remap/green=1
 process/channel_remap/blue=2

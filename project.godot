@@ -14,8 +14,8 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 
 [application]
 
-config/name="Godot 4 Souls-Like Template"
-run/main_scene="res://demo_level/world_castle.tscn"
+config/name="Death For Souls"
+run/main_scene="res://ui/main_menu.tscn"
 config/features=PackedStringArray("4.6", "GL Compatibility")
 config/icon="res://icon.png"
 
@@ -25,6 +25,7 @@ buses/default_bus_layout="uid://do4dfd4nxvapc"
 
 [autoload]
 
+Global="*res://Global.gd"
 CombatFeedback="*res://utility/combat_feedback.gd"
 
 [display]
@@ -34,12 +35,11 @@ window/size/viewport_height=1080
 
 [dotnet]
 
-project/assembly_name="Godot 4 Souls-Like Template"
+project/assembly_name="Death For Souls"
 
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/copy_all_errors/plugin.cfg")
-
 [input]
 
 ui_select={

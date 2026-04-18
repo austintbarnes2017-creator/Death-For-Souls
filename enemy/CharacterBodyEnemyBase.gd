@@ -150,7 +150,7 @@ func _on_target_spotted(_spotted_target): # Updates from a TargetSensor if a tar
 
 func _on_target_lost():
 	if is_instance_valid(target):
-		if chase_timer.is_inside_tree():
+		if chase_timer and chase_timer.is_inside_tree():
 			chase_timer.start()
 
 func _on_chase_timer_timeout():
@@ -185,7 +185,7 @@ func free_movement():
 func rotate_character():
 		var lookdirection = global_position.direction_to(navigation_agent_3d.get_next_path_position())
 		rotation.y = lerp_angle(rotation.y, atan2(lookdirection.x, lookdirection.z), turn_speed)
-
+	
 func set_default_target(): ## Creates a node to return to after patrolling if 
 	## no default target is set.
 	add_child(spawn_location)
@@ -194,7 +194,7 @@ func set_default_target(): ## Creates a node to return to after patrolling if
 	if not default_target:
 		default_target = spawn_location
 	target = default_target
-
+	
 func chase_or_fight(): ## depending on distance to target, run or walk
 	if target:
 		var current_distance = global_position.distance_to(target.global_position)
@@ -202,13 +202,13 @@ func chase_or_fight(): ## depending on distance to target, run or walk
 			current_state = state.CHASE
 		elif current_distance <= combat_range && current_state != state.COMBAT:
 			current_state = state.COMBAT
-
+	
 func _on_combat_timer_timeout():
 	combat_randomizer()
-
+	
 func reset_attack_clock():
 	if current_state == state.COMBAT:
-		if combat_timer.is_stopped() && combat_timer.is_inside_tree():
+		if combat_timer and combat_timer.is_stopped() and combat_timer.is_inside_tree():
 			combat_timer.start()
 			
 func combat_randomizer():

@@ -2,7 +2,11 @@
 
 importer="texture"
 type="CompressedTexture2D"
+<<<<<<< HEAD
 uid="uid://db6upegtqm27e"
+=======
+uid="uid://bu3afcedjjqhk"
+>>>>>>> son/main
 path.s3tc="res://.godot/imported/masculine_albedo.png-e60c6976f72cb4e31b3bad2c4520305a.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],

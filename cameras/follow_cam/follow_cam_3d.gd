@@ -40,7 +40,7 @@ signal targeting_changed
 @export var follow_target : Node3D
 @onready var default_spring :float = spring_length
 
-## if no target is set, this node will attempt to find a CharacterCharacterBody3D to follow
+## if no target is set, this node will attempt to find a CharacterBody3D to follow
 var look_target : Node3D 
 @onready var vertical_offset = global_position.y
 @export var optional_targeting_system : Node
@@ -74,6 +74,7 @@ func _input(event):
 	mouse_control(event)
 	
 func _physics_process(_delta):
+func _physics_process(_delta):
 	joystick_control() # run in physics process rather than event for smoother action
 	_follow_target(follow_target)
 	_lookat_target()
@@ -96,7 +97,6 @@ func _handle_shake(delta):
 
 func add_trauma(amount: float):
 	trauma = min(trauma + amount, 1.0)
-
 ## Normal free camera control
 func mouse_control(_event):
 

@@ -1,5 +1,9 @@
 
+<<<<<<< HEAD
 # Cat's Godot 4 Souls-Like Template & Asset Pack
+=======
+# Death For Souls
+>>>>>>> son/main
 Version 1.0.1
 
 ![Controller Screenshot](https://raw.githubusercontent.com/catprisbrey/Cats-Godot4-Modular-Souls-like-Template/main/screenshots/combat.png)
@@ -42,3 +46,7 @@ The accumulation of about a years worth of testing. It features a lot of the cla
 
 [Creative Commons, but be cool about it](https://choosealicense.com/licenses/unlicense)
 Consider donating me a coffee or crediting/thanking me in a game you make with it :)
+<<<<<<< HEAD
+=======
+
+>>>>>>> son/main
