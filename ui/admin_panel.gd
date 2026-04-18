@@ -131,5 +131,3 @@ func give_weapon_to_player(weapon_type: String):
 
 func _on_close_pressed():
 	queue_free()
-	if get_parent() and get_parent().has_method("set_visible"):
-		get_parent().visible = true

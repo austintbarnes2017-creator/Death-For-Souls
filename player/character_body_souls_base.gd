@@ -793,12 +793,12 @@ func set_admin_status(is_admin_enabled: bool):
 			disable_fly_controls()
 
 # Admin functionality
-func give_weapon(weapon_type: String):
+func give_weapon(new_weapon_type: String):
 	if not weapon_system:
 		print("No weapon system available")
 		return
 		
-	match weapon_type:
+	match new_weapon_type:
 		"axe":
 			# Create and add axe to weapon system
 			var axe_scene = preload("res://player/equipment_system/equipment/Ax.tscn")

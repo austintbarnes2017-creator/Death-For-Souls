@@ -1,8 +1,9 @@
 extends Control
 
-@onready var character_slots = $VBoxContainer/CharacterSlots
-@onready var admin_button = $VBoxContainer/AdminButton
-@onready var quit_button = $VBoxContainer/QuitButton
+@onready var character_grid = $CharacterSelection/CharacterGrid
+@onready var admin_button = $AdminButton
+@onready var quit_button = $QuitButton
+@onready var animated_bg = $Background/AnimatedBackground
 
 const MAX_CHARACTER_SLOTS = 3
 const SAVE_FILE_PATH = "user://characters.json"
@@ -15,7 +16,7 @@ func _ready():
 	
 	# Connect button signals
 	for i in range(MAX_CHARACTER_SLOTS):
-		var slot_button = character_slots.get_child(i)
+		var slot_button = character_grid.get_child(i)
 		slot_button.pressed.connect(_on_character_slot_pressed.bind(i))
 	
 	admin_button.pressed.connect(_on_admin_pressed)
@@ -45,14 +46,16 @@ func save_character_data():
 
 func update_character_slots():
 	for i in range(MAX_CHARACTER_SLOTS):
-		var slot_button = character_slots.get_child(i)
+		var slot_button = character_grid.get_child(i)
 		var slot_key = "slot_" + str(i + 1)
 		
 		if slot_key in character_data and character_data[slot_key]:
 			var char_info = character_data[slot_key]
-			slot_button.text = "Character %d: %s (%s)" % [i + 1, char_info.name, char_info.gender.capitalize()]
+			slot_button.text = "SLOT %d\n%s\nLevel %d\n%s" % [i + 1, char_info.name.to_upper(), char_info.level, char_info.gender.capitalize()]
+			slot_button.modulate = Color(1, 1, 1, 1)
 		else:
-			slot_button.text = "Character Slot %d - Empty" % (i + 1)
+			slot_button.text = "SLOT %d\nNEW CHARACTER" % (i + 1)
+			slot_button.modulate = Color(0.7, 0.7, 0.7, 1)
 
 func _on_character_slot_pressed(slot_index: int):
 	var slot_key = "slot_" + str(slot_index + 1)
@@ -80,13 +83,23 @@ func load_character(slot_index: int):
 	get_tree().change_scene_to_file("res://demo_level/world_castle.tscn")
 
 func open_character_creation(slot_index: int):
+	print("Opening character creation for slot: ", slot_index)
+	
 	# Load character creation scene
 	var creation_scene = preload("res://ui/character_creation.tscn").instantiate()
-	creation_scene.slot_index = slot_index
-	creation_scene.character_created.connect(_on_character_created)
-	
-	add_child(creation_scene)
-	visible = false
+	if creation_scene:
+		print("Character creation scene instantiated successfully")
+		creation_scene.slot_index = slot_index
+		creation_scene.character_created.connect(_on_character_created)
+		
+		# Add as child and ensure it's on top
+		add_child(creation_scene)
+		move_child(creation_scene, get_child_count() - 1)  # Move to top
+		creation_scene.visible = true
+		visible = false
+		print("Character creation scene added as child and made visible")
+	else:
+		print("ERROR: Failed to instantiate character creation scene!")
 
 func _on_character_created(slot_index: int, character_info: Dictionary):
 	var slot_key = "slot_" + str(slot_index + 1)
@@ -98,7 +111,7 @@ func _on_character_created(slot_index: int, character_info: Dictionary):
 func _on_admin_pressed():
 	var admin_panel = preload("res://ui/admin_panel.tscn").instantiate()
 	add_child(admin_panel)
-	visible = false
+	# Don't hide main menu - admin panel should be overlay
 
 func _on_quit_pressed():
 	get_tree().quit()

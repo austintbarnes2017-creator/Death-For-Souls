@@ -24,7 +24,7 @@ config/autoloads={
 
 [audio]
 
-buses/default_bus_layout="res://audio/default_bus_layout.tres"
+buses/default_bus_layout="uid://do4dfd4nxvapc"
 
 [display]
 
@@ -34,6 +34,10 @@ window/size/viewport_height=1080
 [dotnet]
 
 project/assembly_name="Death For Souls"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/copy_all_errors/plugin.cfg")
 
 [input]
 
