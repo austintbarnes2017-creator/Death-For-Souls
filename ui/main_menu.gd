@@ -112,12 +112,17 @@ func _on_character_created(slot_index: int, character_info: Dictionary):
 	character_data[slot_key] = character_info
 	save_character_data()
 	update_character_slots()
-	# Restore main menu UI
-	$Background.visible = true
-	$TitleContainer.visible = true
-	$CharacterSelection.visible = true
-	$QuitButton.visible = true
-	$AdminButton.visible = true
+	
+	# Store character data for the game scene to load
+	var character_file = FileAccess.open("user://current_character.json", FileAccess.WRITE)
+	if character_file:
+		var json_string = JSON.stringify(character_info)
+		character_file.store_string(json_string)
+		character_file.close()
+		print("Character data saved for game loading")
+	
+	# Load the character into the game world
+	load_character(slot_index)
 
 func _on_admin_pressed():
 	var admin_panel = preload("res://ui/admin_panel.tscn").instantiate()

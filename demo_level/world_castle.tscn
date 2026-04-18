@@ -9,13 +9,14 @@
 [ext_resource type="PackedScene" path="res://demo_level/stagingCSG.tscn" id="7_p8o0k"]
 [ext_resource type="PackedScene" path="res://enemy/CharacterBodyEnemyBase.tscn" id="8_3w8s6"]
 [ext_resource type="PackedScene" path="res://interactable objects/spawn_site/spawn_site.tscn" id="9_cpxbt"]
-[ext_resource type="PackedScene" path="res://interactable objects/lever/lever_object.tscn" id="10_10w6y"]
-[ext_resource type="Script" path="res://ui/contol_card.gd" id="11_4norq"]
-[ext_resource type="Texture2D" path="res://ui/panel-border-027.png" id="12_1f7l8"]
-[ext_resource type="Script" path="res://cameras/area_cam/area_cam.gd" id="13_2aall"]
-[ext_resource type="AudioStream" path="res://audio/bone_in_the_walls__level_loop_session.ogg" id="14_wsft0"]
-[ext_resource type="Script" path="res://ui/game_hud.gd" id="15_hud"]
-[ext_resource type="Theme" path="res://ui/default_theme.tres" id="16_theme"]
+[ext_resource type="Script" path="res://demo_level/spawn_manager.gd" id="10_spawn_manager"]
+[ext_resource type="PackedScene" path="res://interactable objects/lever/lever_object.tscn" id="11_10w6y"]
+[ext_resource type="Script" path="res://ui/contol_card.gd" id="12_4norq"]
+[ext_resource type="Texture2D" path="res://ui/panel-border-027.png" id="13_1f7l8"]
+[ext_resource type="Script" path="res://cameras/area_cam/area_cam.gd" id="14_2aall"]
+[ext_resource type="AudioStream" path="res://audio/bone_in_the_walls__level_loop_session.ogg" id="15_wsft0"]
+[ext_resource type="Script" path="res://ui/game_hud.gd" id="16_hud"]
+[ext_resource type="Theme" path="res://ui/default_theme.tres" id="17_theme"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_wiiwu"]
 sky_top_color = Color(0.15, 0.18, 0.25, 1)
@@ -88,6 +89,10 @@ light_color = Color(0.345098, 0.160784, 0.0784314, 1)
 light_energy = 5.356
 light_angular_distance = 2.0
 
+[node name="SpawnManager" parent="." instance=ExtResource("10_spawn_manager")]
+starter_area_spawn = NodePath("../SpawnSite")
+city_area_spawn = NodePath("../CitySpawnSite")
+
 [node name="PlayerCharacterBodySoulsBase" parent="." unique_id=411675059 node_paths=PackedStringArray("last_spawn_site") instance=ExtResource("1_70e33")]
 transform = Transform3D(-0.800146, 0, -0.599806, 0, 1, 0, 0.599806, 0, -0.800146, -9.61981, 2.38419e-07, -0.909899)
 last_spawn_site = NodePath("../SpawnSite")
@@ -97,6 +102,8 @@ transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -1.941
 
 [node name="GateObject" parent="." unique_id=548870898 instance=ExtResource("3_0mbes")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.03717, 0, 12.3254)
+
+[node name="stagingCSG" parent="." instance=ExtResource("7_p8o0k")]
 
 [node name="Ladder" parent="." unique_id=1075479192 instance=ExtResource("4_a4kod")]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -30.634, -0.1, 15.4212)
@@ -142,6 +149,9 @@ transform = Transform3D(0.566751, 0, 0.823889, 0, 1, 0, -0.823889, 0, 0.566751, 
 [node name="SpawnSite" parent="." unique_id=80280505 instance=ExtResource("9_cpxbt")]
 transform = Transform3D(0.996195, 0, 0.0871556, 0, 1, 0, -0.0871556, 0, 0.996195, -5.55901, 0, 4.05321)
 reset_level = true
+
+[node name="CitySpawnSite" parent="." unique_id=80280506 instance=ExtResource("9_cpxbt")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50, 0, -67)
 
 [node name="DoorObject2" parent="." unique_id=1757343348 instance=ExtResource("2_4fq4l")]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -23.9496, 0.0296541, 17.5979)

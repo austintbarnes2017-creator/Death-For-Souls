@@ -473,20 +473,26 @@ func death():
 # Character system integration functions
 func load_character_data_from_file():
 	var character_file_path = "user://current_character.json"
+	print("Attempting to load character from: ", character_file_path)
+	
 	if FileAccess.file_exists(character_file_path):
 		var file = FileAccess.open(character_file_path, FileAccess.READ)
 		if file:
 			var json_string = file.get_as_text()
 			file.close()
+			print("Character file content: ", json_string)
 			
 			var json = JSON.new()
 			var parse_result = json.parse(json_string)
 			
 			if parse_result == OK:
 				var char_info = json.data
+				print("Character data parsed successfully: ", char_info)
 				load_character_data(char_info)
 			else:
-				print("Error parsing character data")
+				print("Error parsing character data, error: ", parse_result)
+	else:
+		print("Character file does not exist: ", character_file_path)
 
 func load_character_data(char_info: Dictionary):
 	character_data = char_info
@@ -506,6 +512,8 @@ func load_character_data(char_info: Dictionary):
 			give_weapon(weapon)
 
 func apply_character_material(material_path: String):
+	print("Attempting to apply material: ", material_path)
+	
 	if not ResourceLoader.exists(material_path):
 		print("Material not found: " + material_path)
 		return
@@ -515,17 +523,22 @@ func apply_character_material(material_path: String):
 		print("Failed to load material: " + material_path)
 		return
 	
+	print("Material loaded successfully: ", material)
+	
 	# Find the character mesh and apply material
 	var character_mesh = %GeneralSkeleton if has_node("%GeneralSkeleton") else find_child("GeneralSkeleton", true, false)
 	if character_mesh:
+		print("Found character skeleton, applying material to children")
 		# Apply material to all mesh instances in the skeleton
 		apply_material_to_children(character_mesh, material)
 	else:
 		print("Character skeleton not found")
 
 func apply_material_to_children(node: Node, material: Material):
+	print("Applying material to children of node: ", node.name)
 	for child in node.get_children():
 		if child is MeshInstance3D:
+			print("Applying material to mesh: ", child.name)
 			child.material_override = material
 		elif child.get_child_count() > 0:
 			apply_material_to_children(child, material)
