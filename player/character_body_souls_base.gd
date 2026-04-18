@@ -1,3 +1,6 @@
+extends CharacterBody3D
+class_name CharacterBodySoulsBase
+
 ## Character system integration
 var character_data: Dictionary = {}
 var fly_mode_enabled: bool = false
