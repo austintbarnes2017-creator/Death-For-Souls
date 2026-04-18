@@ -112,6 +112,14 @@ func _on_give_sword_pressed():
 func _on_give_shield_pressed():
 	give_weapon_to_player("shield")
 
+func give_weapon_to_player(weapon_type: String):
+	var player_node = find_player_node()
+	if player_node and player_node.has_method("give_weapon"):
+		player_node.give_weapon(weapon_type)
+		print("Gave %s to player" % weapon_type)
+	else:
+		print("Player node doesn't have give_weapon method or no player found")
+
 func find_player_node() -> Node:
 	# Try to find the player node in the current scene
 	var tree = get_tree()
@@ -121,30 +129,22 @@ func find_player_node() -> Node:
 		if players.size() > 0:
 			return players[0]
 		
-		# Fallback: recursively search for CharacterBodySoulsBase
-		return find_node_recursive(tree.current_scene, "CharacterBodySoulsBase")
+		# Fallback: search through scene tree
+		return search_for_player(tree.current_scene)
 	
 	return null
 
-func find_node_recursive(node: Node, class_name: String) -> Node:
-	# Recursively search for a node of the specified class
-	if node.get_script() and node.get_script().get_global_name() == class_name:
+func search_for_player(node: Node) -> Node:
+	# Search for player node in scene tree
+	if node.is_in_group("player"):
 		return node
 	
 	for child in node.get_children():
-		var result = find_node_recursive(child, class_name)
+		var result = search_for_player(child)
 		if result:
 			return result
 	
 	return null
-
-func give_weapon_to_player(weapon_type: String):
-	var player_node = find_player_node()
-	if player_node and player_node.has_method("give_weapon"):
-		player_node.give_weapon(weapon_type)
-		print("Gave %s to player" % weapon_type)
-	else:
-		print("Player node doesn't have give_weapon method or no player found")
 
 func _on_close_pressed():
 	queue_free()

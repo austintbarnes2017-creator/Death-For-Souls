@@ -273,6 +273,9 @@ func _input(_event:InputEvent):
 			elif _event.is_action_pressed("admin_panel"):
 				toggle_admin_panel()
 
+			elif _event.is_action_pressed("shift_lock"):
+				toggle_shift_lock()
+
 			elif _event.is_action_pressed("use_gadget_strong"): 
 					use_gadget()
 					
@@ -782,18 +785,38 @@ func set_admin_status(is_admin_enabled: bool):
 		if fly_mode_enabled:
 			disable_fly_controls()
 
+var shift_locked: bool = false
+
 func toggle_admin_panel():
 	# Toggle admin panel during gameplay
+	print("Admin panel toggle called")
 	var existing_panel = get_tree().get_nodes_in_group("admin_panel")
 	
 	if existing_panel.size() > 0:
 		# Close existing admin panel
+		print("Closing existing admin panel")
 		existing_panel[0].queue_free()
 	else:
 		# Open new admin panel
+		print("Opening new admin panel")
 		var admin_panel = preload("res://ui/admin_panel.tscn").instantiate()
-		admin_panel.add_to_group("admin_panel")
-		get_tree().current_scene.add_child(admin_panel)
+		if admin_panel:
+			admin_panel.add_to_group("admin_panel")
+			get_tree().current_scene.add_child(admin_panel)
+			print("Admin panel added to scene")
+		else:
+			print("ERROR: Failed to instantiate admin panel")
+
+func toggle_shift_lock():
+	# Toggle mouse lock state
+	shift_locked = !shift_locked
+	
+	if shift_locked:
+		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+		print("Mouse locked")
+	else:
+		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+		print("Mouse unlocked")
 
 # Admin functionality
 func give_weapon(new_weapon_type: String):

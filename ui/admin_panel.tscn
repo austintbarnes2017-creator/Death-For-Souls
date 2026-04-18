@@ -44,6 +44,7 @@ layout_mode = 2
 text = "Admin Panel"
 theme = ExtResource("2_theme")
 horizontal_alignment = 1
+modulate = Color(1, 1, 1, 1)
 
 [node name="PlayerManagement" type="VBoxContainer" parent="Panel/VBoxContainer"]
 layout_mode = 2
@@ -51,14 +52,20 @@ layout_mode = 2
 [node name="PlayerManagementLabel" type="Label" parent="Panel/VBoxContainer/PlayerManagement"]
 layout_mode = 2
 text = "Player Management"
+theme = ExtResource("2_theme")
+modulate = Color(1, 1, 1, 1)
 
 [node name="PlayerNameInput" type="LineEdit" parent="Panel/VBoxContainer/PlayerManagement"]
 layout_mode = 2
 placeholder_text = "Enter player name..."
+theme = ExtResource("2_theme")
+modulate = Color(1, 1, 1, 1)
 
 [node name="BanButton" type="Button" parent="Panel/VBoxContainer/PlayerManagement"]
 layout_mode = 2
 text = "Ban Player"
+theme = ExtResource("2_theme")
+modulate = Color(1, 1, 1, 1)
 
 [node name="ToolsSection" type="VBoxContainer" parent="Panel/VBoxContainer"]
 layout_mode = 2
@@ -66,23 +73,35 @@ layout_mode = 2
 [node name="ToolsLabel" type="Label" parent="Panel/VBoxContainer/ToolsSection"]
 layout_mode = 2
 text = "Admin Tools"
+theme = ExtResource("2_theme")
+modulate = Color(1, 1, 1, 1)
 
 [node name="FlyButton" type="Button" parent="Panel/VBoxContainer/ToolsSection"]
 layout_mode = 2
 text = "Toggle Fly Mode"
+theme = ExtResource("2_theme")
+modulate = Color(1, 1, 1, 1)
 
 [node name="GiveAxeButton" type="Button" parent="Panel/VBoxContainer/ToolsSection"]
 layout_mode = 2
 text = "Give Axe"
+theme = ExtResource("2_theme")
+modulate = Color(1, 1, 1, 1)
 
 [node name="GiveSwordButton" type="Button" parent="Panel/VBoxContainer/ToolsSection"]
 layout_mode = 2
 text = "Give Sword"
+theme = ExtResource("2_theme")
+modulate = Color(1, 1, 1, 1)
 
 [node name="GiveShieldButton" type="Button" parent="Panel/VBoxContainer/ToolsSection"]
 layout_mode = 2
 text = "Give Shield"
+theme = ExtResource("2_theme")
+modulate = Color(1, 1, 1, 1)
 
 [node name="CloseButton" type="Button" parent="Panel/VBoxContainer"]
 layout_mode = 2
 text = "Close Panel"
+theme = ExtResource("2_theme")
+modulate = Color(1, 1, 1, 1)
