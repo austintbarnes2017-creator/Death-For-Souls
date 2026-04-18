@@ -1,7 +1,7 @@
-[gd_resource type="StandardMaterial3D" load_steps=3 format=3 uid="uid://bi41t3fqe3gpt"]
+[gd_resource type="StandardMaterial3D" load_steps=3 format=3 ]
 
-[ext_resource type="Texture2D" uid="uid://bu3afcedjjqhk" path="res://assets/characters/masculine_albedo.png" id="1_4f7f4"]
-[ext_resource type="Texture2D" uid="uid://dm3fkojdtsemf" path="res://assets/characters/masculine_normals.png" id="2_smk6n"]
+[ext_resource type="Texture2D" path="res://assets/characters/masculine_albedo.png" id="1_4f7f4"]
+[ext_resource type="Texture2D" path="res://assets/characters/masculine_normals.png" id="2_smk6n"]
 
 [resource]
 resource_name = "Skin"
