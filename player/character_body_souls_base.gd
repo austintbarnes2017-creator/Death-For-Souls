@@ -904,5 +904,5 @@ func handle_fly_movement(delta):
 	if Input.is_action_pressed("move_left"):
 		translate(-right_dir * fly_speed * delta)
 	if Input.is_action_pressed("move_right"):
-		translate(right_dir * fly_speed * delta)
-		
+		translate(right_dir * fly_speed * delta)}  
+ 
