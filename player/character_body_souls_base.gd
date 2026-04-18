@@ -440,7 +440,7 @@ func use_item():
 	if current_state == state.DYNAMIC_ACTION:
 		current_state = state.FREE
 
-func hit(_who, _by_what):
+func hit(_who, _by_what: EquipmentResource):
 	if combat_component:
 		combat_component.hit(_who, _by_what)
 
