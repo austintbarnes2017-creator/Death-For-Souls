@@ -759,7 +759,7 @@ func apply_character_material(material_path: String):
 		return
 	
 	# Find the character mesh and apply material
-	var character_mesh = find_child("GeneralSkeleton", true, false)
+	var character_mesh = %GeneralSkeleton if has_node("%GeneralSkeleton") else find_child("GeneralSkeleton", true, false)
 	if character_mesh:
 		# Apply material to all mesh instances in the skeleton
 		apply_material_to_children(character_mesh, material)
@@ -806,17 +806,17 @@ func give_weapon(new_weapon_type: String):
 			# Create and add axe to weapon system
 			var axe_scene = preload("res://player/equipment_system/equipment/Ax.tscn")
 			var axe_instance = axe_scene.instantiate()
-			weapon_system.add_child(axe_instance)
+			weapon_system.held_mount_point.add_child(axe_instance)
 			print("Axe added to inventory")
 		"sword":
 			var sword_scene = preload("res://player/equipment_system/equipment/sword.tscn")
 			var sword_instance = sword_scene.instantiate()
-			weapon_system.add_child(sword_instance)
+			weapon_system.held_mount_point.add_child(sword_instance)
 			print("Sword added to inventory")
 		"shield":
 			var shield_scene = preload("res://player/equipment_system/equipment/shield.tscn")
 			var shield_instance = shield_scene.instantiate()
-			gadget_system.add_child(shield_instance)
+			gadget_system.held_mount_point.add_child(shield_instance)
 			print("Shield added to inventory")
 
 func set_gravity_enabled(enabled: bool):
