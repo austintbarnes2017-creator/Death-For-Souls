@@ -118,6 +118,9 @@ signal strafe_toggled
 signal ladder_started
 signal ladder_finished
 
+@export var anim_state_tree : AnimationTree
+@onready var anim_length
+
 # State management
 enum state {SPAWN,FREE,STATIC_ACTION,DYNAMIC_ACTION,DODGE,SPRINT,LADDER,ATTACK}
 @onready var current_state = state.STATIC_ACTION : set = change_state

@@ -1,4 +1,4 @@
-[gd_scene load_steps=2 format=3 uid="uid://eaw8x3k8m5o6"]
+[gd_scene format=3 uid="uid://eaw8x3k8m5o6"]
 
 [ext_resource type="Script" path="res://ui/admin_panel.gd" id="1_admin_panel"]
 [ext_resource type="Theme" path="res://ui/default_theme.tres" id="2_theme"]
