@@ -279,6 +279,9 @@ func _input(_event:InputEvent):
 			elif _event.is_action_pressed("shift_lock"):
 				toggle_shift_lock()
 
+			elif _event.is_action_pressed("toggle_fly"):
+				toggle_fly_mode()
+
 			elif _event.is_action_pressed("use_gadget_strong"): 
 					use_gadget()
 					
@@ -852,13 +855,54 @@ func set_gravity_enabled(enabled: bool):
 	else:
 		gravity = original_gravity
 
+func toggle_fly_mode():
+	fly_mode_enabled = !fly_mode_enabled
+	
+	if fly_mode_enabled:
+		enable_fly_controls()
+		print("Fly mode enabled (B key)")
+	else:
+		disable_fly_controls()
+		print("Fly mode disabled (B key)")
+
 func enable_fly_controls():
 	fly_mode_enabled = true
 	set_gravity_enabled(false)
+	# Lift player up a bit when entering fly mode
+	translate(Vector3(0, 2, 0))
 	print("Fly controls enabled")
 
 func disable_fly_controls():
 	fly_mode_enabled = false
 	set_gravity_enabled(true)
 	print("Fly controls disabled")
+
+func _physics_process(delta):
+	super._physics_process(delta)
+	
+	# Handle fly movement when fly mode is enabled
+	if fly_mode_enabled:
+		handle_fly_movement(delta)
+
+func handle_fly_movement(delta):
+	var fly_speed = 10.0
+	
+	# Up/down movement with spacebar and Q
+	if Input.is_action_pressed("jump"):  # Spacebar
+		translate(Vector3(0, fly_speed * delta, 0))
+	if Input.is_action_pressed("dodge_dash"):  # Q key
+		translate(Vector3(0, -fly_speed * delta, 0))
+	
+	# Forward/backward movement based on camera direction
+	var forward_dir = -global_transform.basis.z
+	var right_dir = global_transform.basis.x
+	
+	if Input.is_action_pressed("move_forward"):
+		translate(forward_dir * fly_speed * delta)
+	if Input.is_action_pressed("move_backward"):
+		translate(-forward_dir * fly_speed * delta)
+	if Input.is_action_pressed("move_left"):
+		translate(-right_dir * fly_speed * delta)
+	if Input.is_action_pressed("move_right"):
+		translate(right_dir * fly_speed * delta)
 		

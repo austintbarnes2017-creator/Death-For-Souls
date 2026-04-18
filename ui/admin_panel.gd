@@ -85,26 +85,32 @@ func _on_fly_pressed():
 		print("ERROR: No player node found for fly mode")
 
 func enable_fly_mode(player_node: Node):
-	# Disable gravity and enable free movement
-	if player_node.has_method("set_gravity_enabled"):
-		player_node.set_gravity_enabled(false)
-	
-	# Enable fly controls
-	if player_node.has_method("enable_fly_controls"):
-		player_node.enable_fly_controls()
-	
-	print("Fly mode enabled")
+	# Use the new toggle fly mode function
+	if player_node.has_method("toggle_fly_mode"):
+		if not player_node.fly_mode_enabled:
+			player_node.toggle_fly_mode()
+			print("Fly mode enabled via admin panel")
+	else:
+		# Fallback to old method
+		if player_node.has_method("set_gravity_enabled"):
+			player_node.set_gravity_enabled(false)
+		if player_node.has_method("enable_fly_controls"):
+			player_node.enable_fly_controls()
+		print("Fly mode enabled (fallback)")
 
 func disable_fly_mode(player_node: Node):
-	# Re-enable gravity
-	if player_node.has_method("set_gravity_enabled"):
-		player_node.set_gravity_enabled(true)
-	
-	# Disable fly controls
-	if player_node.has_method("disable_fly_controls"):
-		player_node.disable_fly_controls()
-	
-	print("Fly mode disabled")
+	# Use the new toggle fly mode function
+	if player_node.has_method("toggle_fly_mode"):
+		if player_node.fly_mode_enabled:
+			player_node.toggle_fly_mode()
+			print("Fly mode disabled via admin panel")
+	else:
+		# Fallback to old method
+		if player_node.has_method("set_gravity_enabled"):
+			player_node.set_gravity_enabled(true)
+		if player_node.has_method("disable_fly_controls"):
+			player_node.disable_fly_controls()
+		print("Fly mode disabled (fallback)")
 
 func _on_give_axe_pressed():
 	give_weapon_to_player("axe")
