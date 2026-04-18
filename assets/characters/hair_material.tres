@@ -5,10 +5,14 @@
 [resource]
 resource_name = "BakedHair"
 cull_mode = 2
-albedo_color = Color(0, 0, 0, 1)
-roughness = 0.59
+albedo_color = Color(0.3, 0.2, 0.15, 1)
+roughness = 0.6
+metallic = 0.0
 normal_enabled = true
-normal_scale = 7.44
+normal_scale = 6.0
 normal_texture = ExtResource("1_b5y8l")
 anisotropy_enabled = true
-anisotropy = 0.2
+anisotropy = 0.3
+anisotropy_flowmap = ExtResource("1_b5y8l")
+transparency = 0.0
+alpha_scissor_threshold = 0.1
