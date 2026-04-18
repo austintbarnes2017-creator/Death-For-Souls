@@ -85,32 +85,44 @@ func _on_fly_pressed():
 		print("ERROR: No player node found for fly mode")
 
 func enable_fly_mode(player_node: Node):
-	# Use the new toggle fly mode function
-	if player_node.has_method("toggle_fly_mode"):
-		if not player_node.fly_mode_enabled:
-			player_node.toggle_fly_mode()
-			print("Fly mode enabled via admin panel")
+	# Interface with the new FlyComponent
+	var fly_component = find_fly_component(player_node)
+	if fly_component:
+		if not fly_component.active:
+			fly_component.toggle()
+			print("Fly mode enabled via admin panel (FlyComponent)")
 	else:
 		# Fallback to old method
-		if player_node.has_method("set_gravity_enabled"):
-			player_node.set_gravity_enabled(false)
-		if player_node.has_method("enable_fly_controls"):
-			player_node.enable_fly_controls()
-		print("Fly mode enabled (fallback)")
+		if player_node.has_method("toggle_fly_mode"):
+			if not player_node.fly_mode_enabled:
+				player_node.toggle_fly_mode()
+				print("Fly mode enabled via admin panel (fallback)")
+		else:
+			print("ERROR: Could not find FlyComponent or toggle_fly_mode method")
 
 func disable_fly_mode(player_node: Node):
-	# Use the new toggle fly mode function
-	if player_node.has_method("toggle_fly_mode"):
-		if player_node.fly_mode_enabled:
-			player_node.toggle_fly_mode()
-			print("Fly mode disabled via admin panel")
+	# Interface with the new FlyComponent
+	var fly_component = find_fly_component(player_node)
+	if fly_component:
+		if fly_component.active:
+			fly_component.toggle()
+			print("Fly mode disabled via admin panel (FlyComponent)")
 	else:
 		# Fallback to old method
-		if player_node.has_method("set_gravity_enabled"):
-			player_node.set_gravity_enabled(true)
-		if player_node.has_method("disable_fly_controls"):
-			player_node.disable_fly_controls()
-		print("Fly mode disabled (fallback)")
+		if player_node.has_method("toggle_fly_mode"):
+			if player_node.fly_mode_enabled:
+				player_node.toggle_fly_mode()
+				print("Fly mode disabled via admin panel (fallback)")
+		else:
+			print("ERROR: Could not find FlyComponent or toggle_fly_mode method")
+
+func find_fly_component(player_node: Node) -> FlyComponent:
+	# Find the FlyComponent child node
+	if player_node:
+		var fly_comp = player_node.get_node_or_null("FlyComponent")
+		if fly_comp and fly_comp is FlyComponent:
+			return fly_comp
+	return null
 
 func _on_give_axe_pressed():
 	give_weapon_to_player("axe")
