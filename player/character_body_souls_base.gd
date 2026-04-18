@@ -7,6 +7,11 @@ var fly_mode_enabled: bool = false
 var gravity_enabled: bool = true
 var original_gravity: float
 
+## default/1st camera is a follow cam.
+@onready var current_camera = get_viewport().get_camera_3d()
+## Aids strafe rotation when alternating between cameras
+@onready var orientation_target = current_camera
+
 ## Sensing interactable objects, like ladders, doors, etc. 
 @export var interact_sensor : Node3D
 ## The sensor that spotted the object, TOP sensor, or BOTTOM sensor.
