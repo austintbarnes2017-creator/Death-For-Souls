@@ -20,13 +20,27 @@ class_name FollowCam
 @export_range(1,50,1) var mouse_sensitivity = 15.0
 @export_range(1,50,1) var joystick_sensitivity = 15.0
 
+## Camera Shake Settings
+@export var trauma_reduction_rate : float = 1.0
+@export var max_x := 0.2
+@export var max_y := 0.2
+@export var max_z := 0.1
+@export var noise_speed := 50.0
+
+var trauma := 0.0
+var time := 0.0
+@onready var noise = FastNoiseLite.new()
+@onready var initial_h_offset : float = camera_3d.h_offset
+@onready var initial_v_offset : float = camera_3d.v_offset
+@onready var initial_cam_rot : Vector3 = camera_3d.rotation
+
 var targeting = false
 signal targeting_changed
 @export var camera_3d : Camera3D 
 @export var follow_target : Node3D
 @onready var default_spring :float = spring_length
 
-## if no target is set, this node will attempt to find a CharacterBody3D to follow
+## if no target is set, this node will attempt to find a CharacterCharacterBody3D to follow
 var look_target : Node3D 
 @onready var vertical_offset = global_position.y
 @export var optional_targeting_system : Node
@@ -39,6 +53,9 @@ var current_cam_buffer = true
 
 func _ready():
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	
+	noise.seed = randi()
+	noise.frequency = 0.5
 			
 	if follow_target.has_signal("strafe_toggled"): ## to avoid hard coding using a SignalSwitch
 		follow_target.strafe_toggled.connect(_on_strafe_toggled)
@@ -57,11 +74,29 @@ func _input(event):
 	mouse_control(event)
 	
 func _physics_process(_delta):
-	joystick_control() # run in physics processr ather than event for smoother action
+	joystick_control() # run in physics process rather than event for smoother action
 	_follow_target(follow_target)
 	_lookat_target()
 	_detect_camera_change()
+	_handle_shake(_delta)
 	
+func _handle_shake(delta):
+	if trauma > 0:
+		trauma = max(trauma - trauma_reduction_rate * delta, 0.0)
+		time += delta * noise_speed
+		
+		var shake = pow(trauma, 2)
+		camera_3d.h_offset = initial_h_offset + max_x * shake * noise.get_noise_1d(time)
+		camera_3d.v_offset = initial_v_offset + max_y * shake * noise.get_noise_1d(time + 100)
+		camera_3d.rotation.z = initial_cam_rot.z + max_z * shake * noise.get_noise_1d(time + 200)
+	else:
+		camera_3d.h_offset = initial_h_offset
+		camera_3d.v_offset = initial_v_offset
+		camera_3d.rotation.z = initial_cam_rot.z
+
+func add_trauma(amount: float):
+	trauma = min(trauma + amount, 1.0)
+
 ## Normal free camera control
 func mouse_control(_event):
 
