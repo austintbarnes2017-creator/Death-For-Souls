@@ -1,4 +1,10 @@
 # Death For Souls
+
+### 🛠️ [ARCHITECTURAL BLUEPRINT & ROADMAP](ARCHITECTURAL_BLUEPRINT.md)
+**Mandatory reading for all human developers and AI agents joining this project.** Follow the Component-Based Software Engineering (CBSE) rules to prevent Git conflicts.
+
+---
+
 Version 1.0.1
 
 ![Controller Screenshot](https://raw.githubusercontent.com/catprisbrey/Cats-Godot4-Modular-Souls-like-Template/main/screenshots/combat.png)
