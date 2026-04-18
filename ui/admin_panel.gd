@@ -126,13 +126,13 @@ func find_player_node() -> Node:
 	
 	return null
 
-func find_node_recursive(node: Node, class_name: String) -> Node:
+func find_node_recursive(node: Node, target_class_name: String) -> Node:
 	# Recursively search for a node of the specified class
-	if node.get_script() and node.get_script().get_global_name() == class_name:
+	if node.get_script() and node.get_script().get_global_name() == target_class_name:
 		return node
 	
 	for child in node.get_children():
-		var result = find_node_recursive(child, class_name)
+		var result = find_node_recursive(child, target_class_name)
 		if result:
 			return result
 	
