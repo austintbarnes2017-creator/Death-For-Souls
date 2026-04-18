@@ -10,6 +10,7 @@ signal character_created(slot_index: int, character_info: Dictionary)
 
 var slot_index: int = 0
 var selected_gender: String = ""
+var loading_bar: Control
 
 func _ready():
 	print("Character creation _ready() called")
@@ -113,6 +114,42 @@ func _on_create_pressed():
 	if character_name == "" or selected_gender == "":
 		return
 	
+	# Create and show loading bar
+	_create_loading_bar()
+	
+	var character_info = {
+		"name": character_name,
+		"gender": selected_gender,
+		"level": 1,
+		"health": 100,
+		"max_health": 100,
+		"weapons": ["axe"],
+		"material_path": "res://assets/characters/skin_" + selected_gender[0] + ".tres",
+		"created_time": Time.get_unix_time_from_system()
+	}
+	
+	# Wait for loading to complete before emitting signal
+	if loading_bar:
+		loading_bar.loading_complete.connect(_on_loading_complete)
+		loading_bar.start_loading()
+	else:
+		# Fallback if loading bar fails to create
+		_on_loading_complete()
+
+func _create_loading_bar():
+	var loading_scene = preload("res://ui/character_loading_bar.tscn").instantiate()
+	loading_bar = loading_scene
+	
+	# Add to scene tree
+	get_tree().current_scene.add_child(loading_bar)
+	
+	# Hide character creation UI during loading
+	visible = false
+
+func _on_loading_complete():
+	# Emit character creation signal
+	var character_name = name_input.text.strip_edges()
+	
 	var character_info = {
 		"name": character_name,
 		"gender": selected_gender,
@@ -125,6 +162,11 @@ func _on_create_pressed():
 	}
 	
 	character_created.emit(slot_index, character_info)
+	
+	# Clean up loading bar
+	if loading_bar:
+		loading_bar.queue_free()
+	
 	queue_free()
 
 func _on_cancel_pressed():
