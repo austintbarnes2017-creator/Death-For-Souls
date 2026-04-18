@@ -201,6 +201,12 @@ func _physics_process(_delta):
 	if fly_mode_enabled:
 		var fly_speed = 10.0
 		
+		# Debug: Check if fly mode is actually enabled
+		if Input.is_action_just_pressed("jump"):
+			print("Fly mode active, jump pressed - moving up")
+		if Input.is_action_just_pressed("dodge_dash"):
+			print("Fly mode active, Q pressed - moving down")
+		
 		# Up/down movement with spacebar and Q
 		if Input.is_action_pressed("jump"):  # Spacebar
 			translate(Vector3(0, fly_speed * _delta, 0))
@@ -210,6 +216,16 @@ func _physics_process(_delta):
 		# Forward/backward movement based on camera direction
 		var forward_dir = -global_transform.basis.z
 		var right_dir = global_transform.basis.x
+		
+		# Debug WASD input
+		if Input.is_action_just_pressed("move_forward"):
+			print("Fly mode: W pressed - moving forward")
+		if Input.is_action_just_pressed("move_backward"):
+			print("Fly mode: S pressed - moving backward")
+		if Input.is_action_just_pressed("move_left"):
+			print("Fly mode: A pressed - moving left")
+		if Input.is_action_just_pressed("move_right"):
+			print("Fly mode: D pressed - moving right")
 		
 		if Input.is_action_pressed("move_forward"):
 			translate(forward_dir * fly_speed * _delta)
@@ -882,12 +898,14 @@ func set_gravity_enabled(enabled: bool):
 func toggle_fly_mode():
 	fly_mode_enabled = !fly_mode_enabled
 	
+	print("Toggle fly mode called, fly_mode_enabled is now: ", fly_mode_enabled)
+	
 	if fly_mode_enabled:
 		enable_fly_controls()
-		print("Fly mode enabled (B key)")
+		print("Fly mode enabled (B key) - gravity disabled")
 	else:
 		disable_fly_controls()
-		print("Fly mode disabled (B key)")
+		print("Fly mode disabled (B key) - gravity enabled")
 
 func enable_fly_controls():
 	fly_mode_enabled = true
