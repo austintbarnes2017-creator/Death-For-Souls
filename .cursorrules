@@ -1,0 +1,13 @@
+# Cursor Rules for Death For Souls
+
+## Mandatory Architectural Alignment
+Before implementing any new feature, performing any refactoring, or modifying existing systems, you MUST read and adhere to `ARCHITECTURAL_BLUEPRINT.md`.
+
+## Core Directives:
+- **Composition over Inheritance**: Strictly avoid monolithic scripts. Use the Component-Based Software Engineering (CBSE) paradigm.
+- **Dedicated Server Authority**: All combat and physics logic must be server-authoritative. Clients handle rendering and input prediction only.
+- **Project Structure**: Respect the initialized `res://components/`, `res://entities/`, and `res://systems/` hierarchy.
+- **Multi-Agent Coordination**: If multiple agents are working, follow the **Phase 1-6 Roadmap** and absolute node isolation rules to prevent Git conflicts.
+
+## Maintenance:
+If project realizations require deviations from the blueprint, the `ARCHITECTURAL_BLUEPRINT.md` must be updated first to reflect the new shared context.
