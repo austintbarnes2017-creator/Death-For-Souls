@@ -197,32 +197,58 @@ func change_state(new_state):
 
 			
 func _physics_process(_delta):
-	match current_state:
-		state.FREE:
-			rotate_player()
-			free_movement()
-
-		state.SPRINT:
-			rotate_player()
-			free_movement()
-			
-		state.DODGE:
-			dash_movement()
-			rotate_player()
-			
-			
-		state.LADDER:
-			ladder_movement()
-			
-		state.ATTACK:
-			dash_movement()
+	super._physics_process(_delta)
+	
+	# Handle fly movement when fly mode is enabled
+	if fly_mode_enabled:
+		var fly_speed = 10.0
 		
-		state.DYNAMIC_ACTION:
-			free_movement()
-			rotate_player()
+		# Up/down movement with spacebar and Q
+		if Input.is_action_pressed("jump"):  # Spacebar
+			translate(Vector3(0, fly_speed * _delta, 0))
+		if Input.is_action_pressed("dodge_dash"):  # Q key
+			translate(Vector3(0, -fly_speed * _delta, 0))
+		
+		# Forward/backward movement based on camera direction
+		var forward_dir = -global_transform.basis.z
+		var right_dir = global_transform.basis.x
+		
+		if Input.is_action_pressed("move_forward"):
+			translate(forward_dir * fly_speed * _delta)
+		if Input.is_action_pressed("move_backward"):
+			translate(-forward_dir * fly_speed * _delta)
+		if Input.is_action_pressed("move_left"):
+			translate(-right_dir * fly_speed * _delta)
+		if Input.is_action_pressed("move_right"):
+			translate(right_dir * fly_speed * _delta)
+	else:
+		# Normal movement when not in fly mode
+		match current_state:
+			state.FREE:
+				rotate_player()
+				free_movement()
+
+			state.SPRINT:
+				rotate_player()
+				free_movement()
+				
+			state.DODGE:
+				dash_movement()
+				rotate_player()
+				
+				
+			state.LADDER:
+				ladder_movement()
+				
+			state.ATTACK:
+				dash_movement()
 			
-	apply_gravity(_delta)
-	fall_check()
+			state.DYNAMIC_ACTION:
+				free_movement()
+				rotate_player()
+				
+		apply_gravity(_delta)
+		fall_check()
 	
 func _input(_event:InputEvent):
 		# Update current orientation to camera when nothing pressed
@@ -876,33 +902,3 @@ func disable_fly_controls():
 	fly_mode_enabled = false
 	set_gravity_enabled(true)
 	print("Fly controls disabled")
-
-func _physics_process(delta):
-	super._physics_process(delta)
-	
-	# Handle fly movement when fly mode is enabled
-	if fly_mode_enabled:
-		handle_fly_movement(delta)
-
-func handle_fly_movement(delta):
-	var fly_speed = 10.0
-	
-	# Up/down movement with spacebar and Q
-	if Input.is_action_pressed("jump"):  # Spacebar
-		translate(Vector3(0, fly_speed * delta, 0))
-	if Input.is_action_pressed("dodge_dash"):  # Q key
-		translate(Vector3(0, -fly_speed * delta, 0))
-	
-	# Forward/backward movement based on camera direction
-	var forward_dir = -global_transform.basis.z
-	var right_dir = global_transform.basis.x
-	
-	if Input.is_action_pressed("move_forward"):
-		translate(forward_dir * fly_speed * delta)
-	if Input.is_action_pressed("move_backward"):
-		translate(-forward_dir * fly_speed * delta)
-	if Input.is_action_pressed("move_left"):
-		translate(-right_dir * fly_speed * delta)
-	if Input.is_action_pressed("move_right"):
-		translate(right_dir * fly_speed * delta)}  
- 
