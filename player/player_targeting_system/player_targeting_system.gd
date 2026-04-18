@@ -33,7 +33,7 @@ signal target_found
 @onready var reticle_control = $ReticleControl
 
 ## The group name of targetable objects if using groups
-@export var target_group_name : String = "targets"
+@export var target_group_name : String = "Targets"
 ## The layers the eyes will scan when detecting targets
 @export_flags_3d_physics var target_detection_layer_mask = 3
 
@@ -76,7 +76,7 @@ func _input(_event:InputEvent):
 		
 	
 func _on_targeting_toggled(_toggle):
-	#print("targeting toggled: " + str(_toggle))
+	print("targeting toggled: " + str(_toggle))
 	targeting = _toggle
 	if targeting == false:
 		target_list.clear()

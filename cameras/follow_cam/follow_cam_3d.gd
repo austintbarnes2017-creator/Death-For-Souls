@@ -71,7 +71,6 @@ func mouse_control(_event):
 
 		var clamped_rotation = clamp(new_rotation, -.8, 0.8) #rotation clamp
 		rotation.x = clamped_rotation
-		_lookat_target()
 		return
 
 func joystick_control(): # For controlling freecam rotation on gamepad
@@ -84,7 +83,6 @@ func joystick_control(): # For controlling freecam rotation on gamepad
 	
 	var clamped_rotation = clamp(temporary_rotation, -.8, .8)
 	rotation.x = clamped_rotation
-	_lookat_target()
 
 func _detect_camera_change():
 	if camera_3d != get_viewport().get_camera_3d() \
@@ -118,14 +116,14 @@ func _on_target_found(new_target):
 func _lookat_target():
 	if look_target: # needed to make sure you don't try to target a freed node.
 		#if look_target.is_queued_for_deletion():
-		if !look_target.is_in_group("targets"):
+		if !look_target.is_in_group("Targets"):
 			target_cleared.emit()
 			
 	if targeting: # otherwise track the target
 		if look_target: 
-			var vertical_look_offset = Vector3(0,1,0) ## to not look at the target's feet.
+			var vertical_look_offset = Vector3(0,.7,0) ## to not look at the target's feet.
 			look_at(look_target.global_position + vertical_look_offset ,Vector3.UP)
-			
+
 	if "guarding" in follow_target:
 		if follow_target.guarding:
 			spring_length = lerp(spring_length,aim_spring_length,.1)

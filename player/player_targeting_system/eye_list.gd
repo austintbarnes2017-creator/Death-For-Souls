@@ -1,6 +1,6 @@
 extends Area3D
 
-@export var target_group_name : String = "targets"
+@export var target_group_name : String = "Targets"
 @onready var target_list : Array = []
 
 signal target_list_updated

@@ -1,40 +1,29 @@
-extends StaticBody3D
+extends InteractableObject
+class_name ChestObject
 
-## All interactables function similarly. They have a function called "activate"
-## that takes in the player node as an argument. Typically the interactable
-## forces the player to a STATIC state, moves the player into a ready postiion,
-## triggers the interact on the player while making any changes needed here.
-
+# Called when the node enters the scene tree for the first time.
 @onready var opened = false
 @onready var chest_anim_player :AnimationPlayer = $ChestAnimPlayer
 @export var locked : bool = false
 @export var player_offset : Vector3 = Vector3(0,0,1)
-@onready var interact_type = "CHEST"
-@export var anim_delay : float = .2
+
 var anim
-signal interactable_activated
 
-func _ready():
-	add_to_group("interactable")
-	collision_layer = 9
-
-
-func activate(player: CharacterBody3D):
+func activate(_requestor,_sensor_loc):
 	if locked:
 		shake_chest()
 		
 	else:
-		interactable_activated.emit()
-		
 		var new_translation = global_transform.translated_local(player_offset).rotated_local(Vector3.UP,PI)
 
-		var tween = create_tween()
-		tween.tween_property(player,"global_transform", new_translation,.2)
-		await tween.finished
+		#new_translation = global_transform.rotated_local(Vector3.UP,PI)
+		#new_translation = new_translation.translated_local(Vector3(0,_requestor.global_position.y,-1.5))
+		var move_time = .3
 		
 		if opened == false:
-			player.trigger_interact(interact_type)
-			await get_tree().create_timer(anim_delay).timeout
+			if _requestor.has_method("start_interact"):
+				_requestor.start_interact(interact_type,new_translation, move_time)
+				await get_tree().create_timer(move_time).timeout
 			open_chest()
 
 func shake_chest():

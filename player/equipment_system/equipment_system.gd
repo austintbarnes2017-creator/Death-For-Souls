@@ -15,38 +15,32 @@ class_name EquipmentSystem
 ## object receiving the hit.
 
 
-
+signal equipment_changed
 ## The node that will emit the weapon change signal
 @export var player_node : CharacterBody3D
 ## The object group to detect 
-@export var target_group : String = "targets"
-
+@export var target_group : String = "Targets"
+## The signal name should be connected to trigger the equipment swap
+@export var change_signal : String = "weapon_changed"
 ## The signal name from player_node for when the item should be active.
 ## items themselves should manage what "active" means, but typically this is
 ## monitoring/collision shapes, emitters,sound FX, etc. 
 @export var activate_signal : String = "attack_started"
-## Signal to cancel if the collision monitoring of the held item.
+
 @export var deactivate_signal : String = "hurt_started"
-## The signal name should be connected to trigger the equipment swap
-@export var change_signal : String = "weapon_changed"
 ## The primary item location. Bone attachments or Marker3Ds work well for placement
 @export var held_mount_point : Node3D
 ## The secondary item location. Bone attachments or Marker3Ds work well for placement
 @export var stored_mount_point : Node3D
 ## The item currently under the primary held mount node
-@onready var current_equipment : EquipmentObject
+@onready var current_equipment : Node3D
 ## The item currently under the stored/sheathed node
-@onready var stored_equipment : EquipmentObject
-@export var activate_delay : float = .2
-
-@export_flags_3d_physics var collision_detect_layers = 15
+@onready var stored_equipment : Node3D
 
 signal hit_target
 signal hit_world
-signal equipment_changed(new_equipment : EquipmentObject)
 
 func _ready():
-	
 	if player_node:
 		if player_node.has_signal(change_signal):
 			player_node.connect(change_signal,_on_equipment_changed)
@@ -56,14 +50,13 @@ func _ready():
 		## needed to turn off monitoring if hurt mid-attack
 		if player_node.has_signal(deactivate_signal):
 			player_node.connect(deactivate_signal,_on_stop_signal)
-
+			 
 	## update what weapon we're starting with
 	if held_mount_point:
 		if held_mount_point.get_child(0):
 			current_equipment = held_mount_point.get_child(0)
 			current_equipment.equipped = true
 			current_equipment.monitoring = false
-			current_equipment.collision_layer = collision_detect_layers
 			if current_equipment.has_signal("body_entered"):
 				current_equipment.body_entered.connect(_on_body_entered)
 	## update what gadget we're holding
@@ -72,10 +65,8 @@ func _ready():
 			stored_equipment = stored_mount_point.get_child(0)
 			stored_equipment.equipped = false
 			stored_equipment.monitoring = false
-			current_equipment.collision_mask = collision_detect_layers
-
+	
 func _on_equipment_changed():
-	await get_tree().create_timer(player_node.anim_length * .5).timeout
 	if stored_mount_point.get_child(0) && held_mount_point.get_child(0):
 		stored_equipment = stored_mount_point.get_child(0)
 		
@@ -86,7 +77,7 @@ func _on_equipment_changed():
 		held_mount_point.add_child(stored_equipment)
 		stored_mount_point.add_child(current_equipment)
 		
-		# Update to current equipment, let them know they're equiped
+		# Update to current equipment
 		current_equipment.equipped = false
 		if current_equipment.is_connected("body_entered", _on_body_entered):
 			current_equipment.disconnect("body_entered",_on_body_entered)
@@ -96,16 +87,14 @@ func _on_equipment_changed():
 		if current_equipment.has_signal("body_entered"):
 			current_equipment.body_entered.connect(_on_body_entered)
 		current_equipment.equipped = true
-		current_equipment.collision_mask = collision_detect_layers
 		equipment_changed.emit(current_equipment)
 		
 func _on_activated():
 	## awaiting so the area3D starts monitoring about after attack wind-up
 	if current_equipment:
-		await get_tree().create_timer(player_node.anim_length *.3).timeout
 		## pause and start monitoring to hit things
 		current_equipment.monitoring = true
-		await get_tree().create_timer(player_node.anim_length *.5).timeout
+		await get_tree().create_timer(player_node.anim_length *.35).timeout
 		## after moment turn off monitoring to not hit things
 		current_equipment.monitoring = false
 		
@@ -114,10 +103,8 @@ func _on_body_entered(_hit_body):
 		if _hit_body.has_method("hit"):
 			hit_target.emit()
 			_hit_body.hit(player_node,current_equipment.equipment_info)
-			
 	else: 
 		hit_world.emit()
 
 func _on_stop_signal():
 	current_equipment.monitoring = false
-
