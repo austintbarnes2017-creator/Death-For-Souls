@@ -95,8 +95,14 @@ func open_character_creation(slot_index: int):
 		# Add as child and ensure it's on top
 		add_child(creation_scene)
 		move_child(creation_scene, get_child_count() - 1)  # Move to top
+		# Hide main menu UI elements individually so children stay visible
+		$Background.visible = false
+		$TitleContainer.visible = false
+		$CharacterSelection.visible = false
+		$QuitButton.visible = false
+		$AdminButton.visible = false
+		
 		creation_scene.visible = true
-		visible = false
 		print("Character creation scene added as child and made visible")
 	else:
 		print("ERROR: Failed to instantiate character creation scene!")
@@ -106,7 +112,12 @@ func _on_character_created(slot_index: int, character_info: Dictionary):
 	character_data[slot_key] = character_info
 	save_character_data()
 	update_character_slots()
-	visible = true
+	# Restore main menu UI
+	$Background.visible = true
+	$TitleContainer.visible = true
+	$CharacterSelection.visible = true
+	$QuitButton.visible = true
+	$AdminButton.visible = true
 
 func _on_admin_pressed():
 	var admin_panel = preload("res://ui/admin_panel.tscn").instantiate()

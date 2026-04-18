@@ -74,7 +74,6 @@ func _input(event):
 	mouse_control(event)
 	
 func _physics_process(_delta):
-func _physics_process(_delta):
 	joystick_control() # run in physics process rather than event for smoother action
 	_follow_target(follow_target)
 	_lookat_target()
