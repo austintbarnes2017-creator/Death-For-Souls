@@ -130,6 +130,9 @@ func _ready():
 	# Add to player group for admin panel access
 	add_to_group("player")
 	
+	# Initialize mouse mode for gameplay
+	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	
 	if anim_state_tree:
 		anim_state_tree.animation_measured.connect(_on_animation_measured)
 
@@ -812,11 +815,11 @@ func toggle_shift_lock():
 	shift_locked = !shift_locked
 	
 	if shift_locked:
-		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-		print("Mouse locked")
-	else:
 		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
-		print("Mouse unlocked")
+		print("Mouse unlocked for UI")
+	else:
+		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+		print("Mouse captured for gameplay")
 
 # Admin functionality
 func give_weapon(new_weapon_type: String):

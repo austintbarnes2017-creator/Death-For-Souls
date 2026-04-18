@@ -74,12 +74,15 @@ func _on_fly_pressed():
 	
 	var player_node = find_player_node()
 	if player_node:
+		print("Found player node, toggling fly mode")
 		if fly_mode_enabled:
 			enable_fly_mode(player_node)
 			fly_button.text = "Disable Fly Mode"
 		else:
 			disable_fly_mode(player_node)
 			fly_button.text = "Enable Fly Mode"
+	else:
+		print("ERROR: No player node found for fly mode")
 
 func enable_fly_mode(player_node: Node):
 	# Disable gravity and enable free movement
@@ -114,11 +117,15 @@ func _on_give_shield_pressed():
 
 func give_weapon_to_player(weapon_type: String):
 	var player_node = find_player_node()
-	if player_node and player_node.has_method("give_weapon"):
-		player_node.give_weapon(weapon_type)
-		print("Gave %s to player" % weapon_type)
+	if player_node:
+		print("Found player node, giving weapon: %s" % weapon_type)
+		if player_node.has_method("give_weapon"):
+			player_node.give_weapon(weapon_type)
+			print("Successfully gave %s to player" % weapon_type)
+		else:
+			print("ERROR: Player node doesn't have give_weapon method")
 	else:
-		print("Player node doesn't have give_weapon method or no player found")
+		print("ERROR: No player node found for weapon giving")
 
 func find_player_node() -> Node:
 	# Try to find the player node in the current scene
