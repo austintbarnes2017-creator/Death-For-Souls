@@ -12,6 +12,11 @@ var banned_players: Array = []
 var fly_mode_enabled: bool = false
 
 func _ready():
+	print("Admin panel _ready() called")
+	
+	# Add to admin_panel group for easy finding
+	add_to_group("admin_panel")
+	
 	# Connect button signals
 	ban_button.pressed.connect(_on_ban_pressed)
 	fly_button.pressed.connect(_on_fly_pressed)
@@ -19,6 +24,8 @@ func _ready():
 	give_sword_button.pressed.connect(_on_give_sword_pressed)
 	give_shield_button.pressed.connect(_on_give_shield_pressed)
 	close_button.pressed.connect(_on_close_pressed)
+	
+	print("Admin panel initialized")
 	
 	# Load banned players list
 	load_banned_players()
@@ -74,7 +81,7 @@ func _on_fly_pressed():
 			disable_fly_mode(player_node)
 			fly_button.text = "Enable Fly Mode"
 
-func enable_fly_mode(player_node):
+func enable_fly_mode(player_node: Node):
 	# Disable gravity and enable free movement
 	if player_node.has_method("set_gravity_enabled"):
 		player_node.set_gravity_enabled(false)
@@ -85,7 +92,7 @@ func enable_fly_mode(player_node):
 	
 	print("Fly mode enabled")
 
-func disable_fly_mode(player_node):
+func disable_fly_mode(player_node: Node):
 	# Re-enable gravity
 	if player_node.has_method("set_gravity_enabled"):
 		player_node.set_gravity_enabled(true)
@@ -114,10 +121,20 @@ func find_player_node() -> Node:
 		if players.size() > 0:
 			return players[0]
 		
-		# Fallback: look for any CharacterBody3D with the right class
-		for node in tree.current_scene.get_descendants():
-			if node is CharacterBodySoulsBase:
-				return node
+		# Fallback: recursively search for CharacterBodySoulsBase
+		return find_node_recursive(tree.current_scene, "CharacterBodySoulsBase")
+	
+	return null
+
+func find_node_recursive(node: Node, class_name: String) -> Node:
+	# Recursively search for a node of the specified class
+	if node.get_script() and node.get_script().get_global_name() == class_name:
+		return node
+	
+	for child in node.get_children():
+		var result = find_node_recursive(child, class_name)
+		if result:
+			return result
 	
 	return null
 

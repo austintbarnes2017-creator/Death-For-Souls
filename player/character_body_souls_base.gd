@@ -270,6 +270,9 @@ func _input(_event:InputEvent):
 			elif _event.is_action_pressed("change_secondary"):
 				gadget_change()
 
+			elif _event.is_action_pressed("admin_panel"):
+				toggle_admin_panel()
+
 			elif _event.is_action_pressed("use_gadget_strong"): 
 					use_gadget()
 					
@@ -778,6 +781,19 @@ func set_admin_status(is_admin_enabled: bool):
 		print("Admin privileges revoked")
 		if fly_mode_enabled:
 			disable_fly_controls()
+
+func toggle_admin_panel():
+	# Toggle admin panel during gameplay
+	var existing_panel = get_tree().get_nodes_in_group("admin_panel")
+	
+	if existing_panel.size() > 0:
+		# Close existing admin panel
+		existing_panel[0].queue_free()
+	else:
+		# Open new admin panel
+		var admin_panel = preload("res://ui/admin_panel.tscn").instantiate()
+		admin_panel.add_to_group("admin_panel")
+		get_tree().current_scene.add_child(admin_panel)
 
 # Admin functionality
 func give_weapon(new_weapon_type: String):
