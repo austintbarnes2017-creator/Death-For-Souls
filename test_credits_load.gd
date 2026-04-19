@@ -3,7 +3,7 @@ extends Node
 func _ready():
 	# Test if credits screen can be loaded
 	print("Testing credits screen preload...")
-	var credits_scene = preload("res://ui/credits_screen.tscn")
+	var credits_scene = preload("res://ui/credits_screen_fixed.tscn")
 	if credits_scene:
 		print("✅ Credits screen preloaded successfully")
 		var instance = credits_scene.instantiate()
@@ -20,7 +20,7 @@ func _ready():
 	var credits_scene = preload("res://ui/credits_screen_fixed.tscn")
 	if credits_scene:
 		print("✅ Credits screen preloaded successfully")
-		var instance = credits_scene.instantiate()
+		var instance = credits_scene.instance()
 		if instance:
 			print("✅ Credits screen instantiated successfully")
 			instance.queue_free()
