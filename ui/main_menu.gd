@@ -119,11 +119,12 @@ func load_character_data():
 			else:
 				print("Error parsing character data")
 
-func _toggle_main_ui(is_visible: bool):
-	main_buttons.visible = is_visible
-	title_container.visible = is_visible
-	quit_button.visible = is_visible
-	admin_button.visible = is_visible
+func _toggle_main_ui(visible_state: bool):
+	main_buttons.visible = visible_state
+	title_container.visible = visible_state
+	quit_button.visible = visible_state
+	admin_button.visible = visible_state
+
 	# Background stays visible as a shared backdrop
 
 
