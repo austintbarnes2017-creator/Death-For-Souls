@@ -74,7 +74,6 @@ func open_credits_screen():
 	# Create credits screen
 	var credits_scene = preload("res://ui/credits_screen.tscn").instantiate()
 	if credits_scene:
-		credits_scene.back_to_main_menu.connect(_on_back_to_main_menu)
 		add_child(credits_scene)
 		# Hide main menu
 		visible = false
