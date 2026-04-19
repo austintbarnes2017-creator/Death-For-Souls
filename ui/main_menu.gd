@@ -44,24 +44,7 @@ func save_character_data():
 		file.store_string(json_string)
 		file.close()
 
-func _on_admin_pressed():
-	var admin_panel = preload("res://ui/admin_panel.tscn").instantiate()
-	add_child(admin_panel)
-	# Don't hide main menu - admin panel should be overlay
-
 func _on_play_pressed():
-	print("Play button pressed - opening character selection")
-	open_character_selection()
-
-func _on_credits_pressed():
-	print("Credits button pressed - opening credits screen")
-	open_credits_screen()
-
-func _on_death_plus_pressed():
-	print("Death Plus button pressed - opening Death Plus screen")
-	open_death_plus_screen()
-
-func open_character_selection():
 	# Create character selection screen
 	var char_selection_scene = preload("res://ui/character_selection.tscn").instantiate()
 	if char_selection_scene:
@@ -70,7 +53,7 @@ func open_character_selection():
 		# Hide main menu
 		visible = false
 
-func open_credits_screen():
+func _on_credits_pressed():
 	# Create credits screen
 	var credits_scene = preload("res://ui/credits_screen_fixed.tscn").instantiate()
 	if credits_scene:
@@ -78,7 +61,7 @@ func open_credits_screen():
 		# Hide main menu
 		visible = false
 
-func open_death_plus_screen():
+func _on_death_plus_pressed():
 	# Create Death Plus screen
 	var death_plus_scene = preload("res://ui/death_plus_screen.tscn").instantiate()
 	if death_plus_scene:
@@ -90,6 +73,11 @@ func open_death_plus_screen():
 func _on_back_to_main_menu():
 	# Show main menu when returning from other screens
 	visible = true
+
+func _on_admin_pressed():
+	var admin_panel = preload("res://ui/admin_panel.tscn").instantiate()
+	add_child(admin_panel)
+	# Don't hide main menu - admin panel should be overlay
 
 func _on_quit_pressed():
 	get_tree().quit()
