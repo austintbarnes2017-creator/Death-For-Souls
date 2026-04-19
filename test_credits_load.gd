@@ -1,4 +1,4 @@
-extends SceneTree
+extends Node
 
 func _ready():
 	# Test if credits screen can be loaded
