@@ -29,6 +29,23 @@ func _ready():
 	quit_button.pressed.connect(_on_quit_pressed)
 	
 	_setup_network_ui()
+	
+	# Automated Debug Handling (Side-by-Side testing)
+	# This avoids manual menu clicks when using "host" or "join" launch arguments
+	_handle_debug_args()
+
+func _handle_debug_args():
+	var args = OS.get_cmdline_args()
+	if "host" in args:
+		# Small delay to ensure everything is initialized
+		await get_tree().create_timer(0.2).timeout
+		_on_character_chosen(0) # Default to Slot 1 for Host
+		_on_host_pressed()
+	elif "join" in args:
+		await get_tree().create_timer(0.4).timeout # Wait slightly longer for host to start
+		_on_character_chosen(1) # Default to Slot 2 for Client
+		_on_join_pressed()
+
 
 func _setup_network_ui():
 	network_panel = PanelContainer.new()
