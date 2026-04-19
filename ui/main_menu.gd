@@ -9,6 +9,8 @@ const MAX_CHARACTER_SLOTS = 3
 const SAVE_FILE_PATH = "user://characters.json"
 
 var character_data = {}
+var network_panel: PanelContainer
+var selected_slot_index: int = -1
 
 func _ready():
 	load_character_data()
@@ -21,6 +23,46 @@ func _ready():
 	
 	admin_button.pressed.connect(_on_admin_pressed)
 	quit_button.pressed.connect(_on_quit_pressed)
+	
+	_setup_network_ui()
+
+func _setup_network_ui():
+	network_panel = PanelContainer.new()
+	network_panel.visible = false
+	network_panel.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	network_panel.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	network_panel.anchors_preset = Control.PRESET_CENTER
+	
+	var vbox = VBoxContainer.new()
+	vbox.add_theme_constant_override("separation", 20)
+	network_panel.add_child(vbox)
+	
+	var label = Label.new()
+	label.text = "SELECT CONNECTION MODE"
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	vbox.add_child(label)
+	
+	var host_btn = Button.new()
+	host_btn.text = "HOST GAME (Server)"
+	host_btn.pressed.connect(_on_host_pressed)
+	vbox.add_child(host_btn)
+	
+	var join_btn = Button.new()
+	join_btn.text = "JOIN GAME (Direct Connect)"
+	join_btn.pressed.connect(_on_join_pressed)
+	vbox.add_child(join_btn)
+	
+	var solo_btn = Button.new()
+	solo_btn.text = "SOLO PLAY"
+	solo_btn.pressed.connect(_on_solo_pressed)
+	vbox.add_child(solo_btn)
+	
+	var cancel_btn = Button.new()
+	cancel_btn.text = "CANCEL"
+	cancel_btn.pressed.connect(func(): network_panel.visible = false; $CharacterSelection.visible = true)
+	vbox.add_child(cancel_btn)
+	
+	add_child(network_panel)
 
 func load_character_data():
 	if FileAccess.file_exists(SAVE_FILE_PATH):
@@ -79,6 +121,26 @@ func load_character(slot_index: int):
 		character_file.store_string(json_string)
 		character_file.close()
 	
+	# Instead of changing scene immediately, show networking options
+	selected_slot_index = slot_index
+	$CharacterSelection.visible = false
+	network_panel.visible = true
+
+func _on_host_pressed():
+	NetworkManager.host_game()
+	start_game()
+
+func _on_join_pressed():
+	NetworkManager.join_game("127.0.0.1")
+	# Join game will spawn us via the PeerConnected signal if implemented, 
+	# but we still need to load the world scene locally.
+	start_game()
+
+func _on_solo_pressed():
+	# In solo, we don't initialize NetworkManager
+	start_game()
+
+func start_game():
 	# Change to game scene
 	get_tree().change_scene_to_file("res://demo_level/world_castle.tscn")
 

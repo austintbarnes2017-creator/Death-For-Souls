@@ -52,7 +52,8 @@ var current_cam_buffer = true
 
 
 func _ready():
-	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	# Mouse mode is handled by the player script, not the camera
+	# Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	
 	noise.seed = randi()
 	noise.frequency = 0.5
@@ -66,14 +67,21 @@ func _ready():
 		optional_targeting_system.target_found.connect(_on_target_found)
 		
 	if camera_3d:
-		camera_3d.current = true
+		# Don't auto-activate the camera here — NetworkSyncComponent will
+		# call make_current() only for the local player's camera.
+		# camera_3d.current = true
+		pass
 	
 	target_cleared.connect(_on_target_cleared)
 	
 func _input(event):
+	if not camera_3d or not camera_3d.current:
+		return
 	mouse_control(event)
 	
 func _physics_process(_delta):
+	if not camera_3d or not camera_3d.current:
+		return
 	joystick_control() # run in physics process rather than event for smoother action
 	_follow_target(follow_target)
 	_lookat_target()

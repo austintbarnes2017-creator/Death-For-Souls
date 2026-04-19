@@ -117,17 +117,6 @@ func _on_create_pressed():
 	# Create and show loading bar
 	_create_loading_bar()
 	
-	var character_info = {
-		"name": character_name,
-		"gender": selected_gender,
-		"level": 1,
-		"health": 100,
-		"max_health": 100,
-		"weapons": ["axe"],
-		"material_path": "res://assets/characters/skin_" + selected_gender[0] + ".tres",
-		"created_time": Time.get_unix_time_from_system()
-	}
-	
 	# Wait for loading to complete before emitting signal
 	if loading_bar:
 		loading_bar.loading_complete.connect(_on_loading_complete)

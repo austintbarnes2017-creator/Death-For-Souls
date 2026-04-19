@@ -10,9 +10,18 @@ var character_data: Dictionary = {}
 @onready var network_sync : NetworkSyncComponent = $NetworkSyncComponent
 
 ## default/1st camera is a follow cam.
-@onready var current_camera = get_viewport().get_camera_3d()
+## Refreshed lazily — the @onready ref may point to the freed placeholder camera
+var current_camera: Camera3D :
+	get:
+		if not is_instance_valid(current_camera):
+			current_camera = get_viewport().get_camera_3d()
+		return current_camera
 ## Aids strafe rotation when alternating between cameras
-@onready var orientation_target = current_camera
+var orientation_target: Node3D :
+	get:
+		if not is_instance_valid(orientation_target):
+			orientation_target = current_camera
+		return orientation_target
 
 ## Sensing interactable objects, like ladders, doors, etc. 
 @export var interact_sensor : Node3D
@@ -33,7 +42,12 @@ signal interact_started
 ## A helper variable, tracks the current weapon type for easier referencing from
 ## the anim_state_tree
 @onready var attack_combo_timer = Timer.new()
-var weapon_type :String = "SLASH"
+var weapon_type :String = "SLASH" : 
+	set(val):
+		if weapon_type == val: return
+		weapon_type = val
+		weapon_changed.emit()
+		weapon_change_ended.emit(val)
 signal weapon_change_started
 signal weapon_changed
 signal weapon_change_ended
@@ -49,7 +63,12 @@ var secondary_action
 @export var gadget_system : EquipmentSystem
 ## A helper variable, tracks the current gadget type for easier referencing from
 ## the anim_state_tree
-var gadget_type :String = "SHIELD"
+var gadget_type :String = "SHIELD" :
+	set(val):
+		if gadget_type == val: return
+		gadget_type = val
+		gadget_changed.emit()
+		gadget_change_ended.emit(val)
 signal gadget_change_started
 signal gadget_changed
 signal gadget_change_ended
@@ -59,9 +78,13 @@ signal gadget_activated
 
 
 @export var health_system :Node
+@warning_ignore("unused_signal")
 signal hurt_started
+@warning_ignore("unused_signal")
 signal parry_started
+@warning_ignore("unused_signal")
 signal block_started
+@warning_ignore("unused_signal")
 signal damage_taken
 signal health_received
 signal death_started
@@ -81,25 +104,34 @@ signal item_used
 @onready var last_altitude = global_position
 @export var hard_landing_height :float = 4 # how far they can fall before 'hard landing'
 signal landed_hard
+@warning_ignore("unused_signal")
 signal jump_started
+@warning_ignore("unused_signal")
 signal dodge_started
+@warning_ignore("unused_signal")
 signal dodge_ended
+@warning_ignore("unused_signal")
 signal sprint_started
+@warning_ignore("unused_signal")
 signal ladder_started
+@warning_ignore("unused_signal")
 signal ladder_finished
 
 # Movement state proxies (read by Animation Tree)
 var strafing : bool = false
-var input_dir : Vector2
-var strafe_cross_product : float
-var move_dot_product : float
+var input_dir : Vector2 = Vector2.ZERO
+var strafe_cross_product : float = 0.0
+var move_dot_product : float = 0.0
 var guarding : bool = false
 
 # Strafing signals
 signal strafe_toggled
 
+# Networking & CSP Step
+var tick : int = 0
+
 @export var anim_state_tree : AnimationTree
-@onready var anim_length
+var anim_length : float = 0.2
 
 # State management
 enum state {SPAWN,FREE,STATIC_ACTION,DYNAMIC_ACTION,DODGE,SPRINT,LADDER,ATTACK}
@@ -139,9 +171,24 @@ func _ready():
 	load_character_data_from_file()
 		
 	if anim_state_tree:
-		await anim_state_tree.animation_measured
-	await get_tree().create_timer(anim_length).timeout
-	current_state = state.FREE
+		# Safety: Ensure we release the player to FREE state even if signals miss
+		var timer = get_tree().create_timer(1.0)
+		var sync_ref = [false] # Use array for reliable reference capture in lambda
+		
+		var release_player = func(_args = null):
+			if sync_ref[0]: return
+			sync_ref[0] = true
+			current_state = state.FREE
+			print("CharacterBodySoulsBase: Player ", name, " initialized and FREE.")
+		
+		anim_state_tree.animation_measured.connect(release_player, CONNECT_ONE_SHOT)
+		timer.timeout.connect(release_player, CONNECT_ONE_SHOT)
+	else:
+		current_state = state.FREE
+		print("CharacterBodySoulsBase: Player ", name, " initialized (No AnimTree).")
+
+func is_local_authority() -> bool:
+	return network_sync.is_local_player() if network_sync else is_multiplayer_authority()
 
 ## Makes variable changes for each state, primiarily used for updating movement speeds
 func change_state(new_state):
@@ -154,9 +201,16 @@ func change_state(new_state):
 
 			
 func _physics_process(_delta):
+	# Sync local instance tick with the global network manager
+	tick = NetworkManager.get_tick()
+	
 	if fly_component and fly_component.active:
 		fly_component.handle_movement(_delta)
 	elif movement_component:
+		movement_component.current_tick = tick
+		
+		# In a networked environment, logic flow depends on authority
+		# handled within the components.
 		match current_state:
 			state.FREE, state.SPRINT, state.DYNAMIC_ACTION:
 				movement_component.rotate_player(current_state, false, orientation_target)
@@ -173,6 +227,10 @@ func _physics_process(_delta):
 		fall_check()
 	
 func _input(_event:InputEvent):
+	# Authority Guard: Prevent inputs on remote proxies
+	if not is_local_authority():
+		return
+		
 	if !Input.is_anything_pressed():
 		current_camera = get_viewport().get_camera_3d()
 	
@@ -240,6 +298,7 @@ func _input(_event:InputEvent):
 func set_strafe_targeting():
 	if movement_component:
 		movement_component.strafing = !movement_component.strafing
+		strafing = movement_component.strafing # Update synced property
 		strafe_toggled.emit(movement_component.strafing)
 	
 func _on_target_cleared():

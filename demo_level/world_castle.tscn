@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 ]
+[gd_scene load_steps=25 format=3 ]
 
 [ext_resource type="PackedScene" path="res://player/character_body_souls_base.tscn" id="1_70e33"]
 [ext_resource type="PackedScene" path="res://interactable objects/doors/door_object.tscn" id="2_4fq4l"]
@@ -16,6 +16,7 @@
 [ext_resource type="AudioStream" path="res://audio/bone_in_the_walls__level_loop_session.ogg" id="14_wsft0"]
 [ext_resource type="Script" path="res://ui/game_hud.gd" id="15_hud"]
 [ext_resource type="Theme" path="res://ui/default_theme.tres" id="16_theme"]
+[ext_resource type="Script" path="res://demo_level/world_castle.gd" id="17_world"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_wiiwu"]
 sky_top_color = Color(0.15, 0.18, 0.25, 1)
@@ -71,7 +72,9 @@ width = 8
 [sub_resource type="BoxShape3D" id="BoxShape3D_m6vf8"]
 size = Vector3(7.74271, 3, 11.8024)
 
+
 [node name="World" type="Node3D" unique_id=423349144]
+script = ExtResource("17_world")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=332227615]
 environment = SubResource("Environment_eed6x")
