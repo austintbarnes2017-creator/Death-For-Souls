@@ -156,8 +156,10 @@ func _on_character_chosen(slot_index: int):
 func _on_credits_pressed():
 	var credits_scene = preload("res://ui/credits_screen_fixed.tscn").instantiate()
 	if credits_scene:
+		credits_scene.back_to_main_menu.connect(_on_back_to_main_menu)
 		add_child(credits_scene)
 		_toggle_main_ui(false)
+
 
 
 func _on_death_plus_pressed():
