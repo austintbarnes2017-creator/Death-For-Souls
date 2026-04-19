@@ -77,6 +77,8 @@ func open_credits_screen():
 		add_child(credits_scene)
 		# Hide main menu
 		visible = false
+		# Test credits screen loading
+		test_credits_loading()
 
 func open_death_plus_screen():
 	# Create Death Plus screen
