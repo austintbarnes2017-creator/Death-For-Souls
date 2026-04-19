@@ -47,6 +47,7 @@ func equip_weapon(player: Node3D):
 	player_node = player
 	equipped = true
 	
+<<<<<<< HEAD
 	# Find equipment system
 	equipment_system = player.get_node_or_null("EquipmentSystem")
 	
@@ -75,6 +76,18 @@ func _on_equipment_complete():
 	# Connect area signals
 	if $Area3D:
 		$Area3D.body_entered.connect(_on_area_entered)
+=======
+	# Connect area signals
+	if $Area3D:
+		$Area3D.body_entered.connect(_on_area_entered)
+	
+	# Position sword in player's hand
+	if player_node:
+		var equipment_system = player_node.get_node_or_null("EquipmentSystem")
+		if equipment_system and equipment_system.held_mount_point:
+			reparent(equipment_system.held_mount_point)
+			transform = Transform3D.IDENTITY
+>>>>>>> 63405fa001dcbbf6f4e684a06fa7fea12fc99a8a
 	
 	weapon_equipped.emit()
 	print("Red Glowing Big Skull Sword equipped!")
@@ -90,11 +103,14 @@ func unequip_weapon():
 	if $Area3D and $Area3D.is_connected("body_entered", _on_area_entered):
 		$Area3D.body_entered.disconnect(_on_area_entered)
 	
+<<<<<<< HEAD
 	# Move back to storage
 	if equipment_system and equipment_system.stored_mount_point:
 		reparent(equipment_system.stored_mount_point)
 		transform = Transform3D.IDENTITY
 	
+=======
+>>>>>>> 63405fa001dcbbf6f4e684a06fa7fea12fc99a8a
 	weapon_unequipped.emit()
 	print("Red Glowing Big Skull Sword unequipped")
 
@@ -114,6 +130,7 @@ func start_swing():
 	tween.set_parallel(true)
 	
 	# Swing rotation
+<<<<<<< HEAD
 	tween.tween_property(self, "rotation_degrees:z", -90, swing_speed * 0.3)
 	tween.tween_property(self, "rotation_degrees:z", 90, swing_speed * 0.4).set_delay(swing_speed * 0.3)
 	tween.tween_property(self, "rotation_degrees:z", 0, swing_speed * 0.3).set_delay(swing_speed * 0.7)
@@ -121,6 +138,16 @@ func start_swing():
 	# Scale effect for impact
 	tween.tween_property(self, "scale", Vector3(1.1, 1.1, 1.1), swing_speed * 0.1).set_delay(swing_speed * 0.5)
 	tween.tween_property(self, "scale", Vector3(1.0, 1.0, 1.0), swing_speed * 0.1).set_delay(swing_speed * 0.6)
+=======
+	tween.tween_property(self, "rotation_degrees:y", 180, swing_speed * 0.3)
+	tween.tween_property(self, "rotation_degrees:x", -45, swing_speed * 0.2)
+	tween.tween_property(self, "rotation_degrees:x", 45, swing_speed * 0.2).set_delay(swing_speed * 0.2)
+	tween.tween_property(self, "rotation_degrees:x", 0, swing_speed * 0.1).set_delay(swing_speed * 0.4)
+	
+	# Scale effect for impact
+	tween.tween_property(self, "scale", Vector3(1.2, 1.2, 1.2), swing_speed * 0.1).set_delay(swing_speed * 0.3)
+	tween.tween_property(self, "scale", Vector3(1.0, 1.0, 1.0), swing_speed * 0.1).set_delay(swing_speed * 0.4)
+>>>>>>> 63405fa001dcbbf6f4e684a06fa7fea12fc99a8a
 	
 	# End swing
 	tween.tween_callback(_on_swing_complete).set_delay(swing_speed)
@@ -132,6 +159,13 @@ func _on_swing_complete():
 	if $Area3D:
 		$Area3D.monitoring = false
 	
+<<<<<<< HEAD
+=======
+	# Reset rotation
+	var reset_tween = create_tween()
+	reset_tween.tween_property(self, "rotation", original_rotation, 0.2)
+	
+>>>>>>> 63405fa001dcbbf6f4e684a06fa7fea12fc99a8a
 	print("Death Plus sword swing complete!")
 
 func get_equipment_info():
