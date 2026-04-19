@@ -180,7 +180,7 @@ size = Vector3(7.14069, 13.16, 3.54053)
 material = ExtResource("1_cuay2")
 
 [node name="RampToCity" type="CSGBox3D" parent="CSGBox3D"]
-transform = Transform3D(1, 0, 0, 0, 0.447214, -0.894427, 0, 0.894427, 0.447214, 3.23, 0, 11.75)
+transform = Transform3D(1, 0, 0, 0, 0.447214, -0.894427, 0, 0.894427, 0.447214, 3.23, 1, 11.75)
 size = Vector3(8, 0.5, 20)
 material = SubResource("StandardMaterial3D_dgj8o")
 
