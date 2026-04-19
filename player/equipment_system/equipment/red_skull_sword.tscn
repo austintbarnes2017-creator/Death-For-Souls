@@ -1,10 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://red_skull_sword"]
+[gd_scene load_steps=2 format=3]
 
 [ext_resource type="Script" path="res://player/equipment_system/equipment/red_skull_sword.gd" id="1_script"]
 [ext_resource type="Material" path="res://assets/red_glow_metal.tres" id="2_material"]
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_1"]
-size = Vector3(0.1, 0.1, 2.5)
 
 [sub_resource type="StandardMaterial3D" id="RedGlowMaterial"]
 albedo_color = Color(1, 0.1, 0.1, 1)
@@ -13,6 +10,17 @@ emission_energy_multiplier = 2.0
 roughness = 0.2
 metallic = 0.9
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_1"]
+size = Vector3(0.1, 0.1, 2.5)
+
+[sub_resource type="BoxMesh" id="BoxMesh_red_sword"]
+size = Vector3(0.1, 0.1, 2.5)
+material = SubResource("RedGlowMaterial")
+
+[sub_resource type="SphereMesh" id="SphereMesh_skull"]
+radius = 0.3
+material = SubResource("RedGlowMaterial")
+
 [node name="RedSkullSword" type="Node3D"]
 script = ExtResource("1_script")
 
@@ -20,10 +28,6 @@ script = ExtResource("1_script")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("BoxMesh_red_sword")
 material = ExtResource("2_material")
-
-[sub_resource type="BoxMesh" id="BoxMesh_red_sword"]
-size = Vector3(0.1, 0.1, 2.5)
-material = SubResource("RedGlowMaterial")
 
 [node name="Area3D" type="Area3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
@@ -36,8 +40,4 @@ shape = SubResource("BoxShape3D_1")
 [node name="SkullDecoration" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 0, 0, -1.5)
 mesh = SubResource("SphereMesh_skull")
-material = SubResource("RedGlowMaterial")
-
-[sub_resource type="SphereMesh" id="SphereMesh_skull"]
-radius = 0.3
-material = SubResource("RedGlowMaterial")
+material = ExtResource("2_material")

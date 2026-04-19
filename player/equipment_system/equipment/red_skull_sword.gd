@@ -69,7 +69,8 @@ func create_death_effect():
 	# Create a red explosion effect
 	var tween = create_tween()
 	tween.tween_property(self, "scale", Vector3(3, 3, 3), 0.5)
-	tween.tween_callback(func(): 
-		# Reset scale after effect
-		scale = Vector3(1, 1, 1)
-	)
+	tween.tween_callback(_on_effect_complete)
+
+func _on_effect_complete():
+	# Reset scale after effect
+	scale = Vector3(1, 1, 1)

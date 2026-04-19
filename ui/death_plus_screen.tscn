@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://e9x7k4qk2m6r"]
+[gd_scene format=3]
 
 [ext_resource type="Script" path="res://ui/death_plus_screen.gd" id="1_death_plus"]
 [ext_resource type="Theme" path="res://ui/default_theme.tres" id="2_theme"]
