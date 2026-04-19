@@ -179,6 +179,91 @@ transform = Transform3D(-1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -1, -5.679
 size = Vector3(7.14069, 13.16, 3.54053)
 material = ExtResource("1_cuay2")
 
+[node name="RampToCity" type="CSGBox3D" parent="CSGBox3D"]
+transform = Transform3D(1, 0, 0, 0, 0.447214, -0.894427, 0, 0.894427, 0.447214, 25, 0, 15)
+size = Vector3(8, 0.5, 20)
+material = SubResource("StandardMaterial3D_dgj8o")
+
+[node name="PathToCity" type="CSGBox3D" parent="CSGBox3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35, -0.25, 25)
+size = Vector3(6, 0.5, 40)
+material = SubResource("StandardMaterial3D_dgj8o")
+
+[node name="FrontGates" type="CSGCombiner3D" parent="CSGBox3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35, 5, 45)
+
+[node name="GateWallLeft" type="CSGBox3D" parent="CSGBox3D/FrontGates"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 0, 0)
+size = Vector3(3, 15, 3)
+material = ExtResource("1_cuay2")
+
+[node name="GateWallRight" type="CSGBox3D" parent="CSGBox3D/FrontGates"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0, 0)
+size = Vector3(3, 15, 3)
+material = ExtResource("1_cuay2")
+
+[node name="GateArch" type="CSGBox3D" parent="CSGBox3D/FrontGates"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8, 0)
+size = Vector3(15, 4, 3)
+material = ExtResource("1_cuay2")
+
+[node name="GateArchOpening" type="CSGBox3D" parent="CSGBox3D/FrontGates/GateArch"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+operation = 2
+size = Vector3(8, 3, 4)
+material = ExtResource("3_gacsr")
+
+[node name="ExtendedCity" type="CSGCombiner3D" parent="CSGBox3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35, 0, 70)
+
+[node name="CityBuilding1" type="CSGBox3D" parent="CSGBox3D/ExtendedCity"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 10, -10)
+size = Vector3(8, 25, 8)
+material = ExtResource("1_cuay2")
+
+[node name="CityBuilding1Roof" type="CSGBox3D" parent="CSGBox3D/ExtendedCity/CityBuilding1"]
+transform = Transform3D(1, 0, 0, 0, 0.707107, -0.707107, 0, 0.707107, 0.707107, 0, 7.5, 0)
+size = Vector3(10, 10, 10)
+material = ExtResource("3_gacsr")
+
+[node name="CityBuilding2" type="CSGBox3D" parent="CSGBox3D/ExtendedCity"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8, -5)
+size = Vector3(10, 20, 10)
+material = ExtResource("2_pn36w")
+
+[node name="CityBuilding2Roof" type="CSGBox3D" parent="CSGBox3D/ExtendedCity/CityBuilding2"]
+transform = Transform3D(1, 0, 0, 0, 0.707107, -0.707107, 0, 0.707107, 0.707107, 0, 6, 0)
+size = Vector3(12, 8, 12)
+material = ExtResource("3_gacsr")
+
+[node name="CityBuilding3" type="CSGBox3D" parent="CSGBox3D/ExtendedCity"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 12, -8)
+size = Vector3(6, 30, 6)
+material = ExtResource("1_cuay2")
+
+[node name="CityBuilding3Roof" type="CSGCylinder3D" parent="CSGBox3D/ExtendedCity/CityBuilding3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 9, 0)
+radius = 4
+height = 8
+material = ExtResource("3_gacsr")
+
+[node name="CityTower1" type="CSGCylinder3D" parent="CSGBox3D/ExtendedCity"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 15, 5)
+radius = 3
+height = 35
+material = ExtResource("2_pn36w")
+
+[node name="CityTower2" type="CSGCylinder3D" parent="CSGBox3D/ExtendedCity"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 15, 5)
+radius = 3
+height = 35
+material = ExtResource("2_pn36w")
+
+[node name="CityGround" type="CSGBox3D" parent="CSGBox3D/ExtendedCity"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+size = Vector3(80, 1, 60)
+material = SubResource("StandardMaterial3D_dgj8o")
+
 [node name="CSGBox3D3" type="CSGBox3D" parent="CSGBox3D/City/CSGBox3D4"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.30327, 0)
 operation = 2
