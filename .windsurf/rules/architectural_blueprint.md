@@ -16,5 +16,8 @@ This document mirrors the core standards defined in `ARCHITECTURAL_BLUEPRINT.md`
 - `res://systems/`: Global managers and networking.
 
 ## 4. Conflict Prevention
-- When updating shared files, order your edits carefully. 
 - Preference: Add new functionality to new files, keep shared file modifications to simple bridge/signal calls.
+
+## 5. UI & Interface
+- **MANDATORY**: Follow `docs/godot_ui_best_practices.md` to prevent "Hidden Parent" visibility bugs and variable shadowing.
+

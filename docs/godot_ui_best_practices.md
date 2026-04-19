@@ -17,7 +17,13 @@ main_buttons.visible = false
 title_container.visible = false
 ```
 
-## 2. Scene Transitions
+## 2. Variable Shadowing
+- **Issue**: Naming function parameters or local variables the same as base class methods/properties (e.g., naming a parameter `is_visible` in a script inheriting from `CanvasItem`).
+- **Impact**: Godot will issue a `SHADOWED_VARIABLE_BASE_CLASS` warning, and it can lead to confusing logic where the local variable is used instead of the intended base method.
+- **Best Practice**: Use descriptive names that don't clash with common Godot keywords. Prefixing parameters with `p_` (e.g., `p_visible`) or using suffixes like `_state` is a safe way to avoid this.
+
+## 3. Scene Transitions
+
 - **Prefer Instantiation**: For sub-menus (Settings, Credits), use `instantiate()` and `add_child()` rather than `change_scene_to_file()`. This allows for smoother transitions and easier "Back" functionality.
 - **Signal Handlers**: Always ensure "Back" buttons are connected to signals that restore the previous UI state.
 
