@@ -15,12 +15,18 @@ func _ready():
 	else:
 		print("❌ Failed to preload credits screen")
 	
-	# Test main menu preload
-	print("Testing main menu preload...")
-	var main_menu = preload("res://ui/main_menu.gd")
-	if main_menu:
-		print("✅ Main menu preloaded successfully")
+	# Test credits screen preload only
+	print("Testing credits screen preload...")
+	var credits_scene = preload("res://ui/credits_screen_fixed.tscn")
+	if credits_scene:
+		print("✅ Credits screen preloaded successfully")
+		var instance = credits_scene.instantiate()
+		if instance:
+			print("✅ Credits screen instantiated successfully")
+			instance.queue_free()
+		else:
+			print("❌ Failed to instantiate credits screen")
 	else:
-		print("❌ Failed to preload main menu")
+		print("❌ Failed to preload credits screen")
 	
 	quit()
