@@ -72,7 +72,7 @@ func open_character_selection():
 
 func open_credits_screen():
 	# Create credits screen
-	var credits_scene = preload("res://ui/credits_screen.tscn").instantiate()
+	var credits_scene = preload("res://ui/credits_screen_fixed.tscn").instantiate()
 	if credits_scene:
 		add_child(credits_scene)
 		# Hide main menu
