@@ -8,4 +8,5 @@ func _ready():
 	else:
 		print("❌ Failed to preload credits screen")
 	
-	quit()
+	get_tree().quit()
+

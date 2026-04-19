@@ -15,9 +15,9 @@ func _ready():
 	else:
 		print("❌ Failed to preload credits screen")
 	
-	# Test credits screen preload only
-	print("Testing credits screen preload...")
-	var credits_scene = preload("res://ui/credits_screen_fixed.tscn")
+	# Test credits screen preload only (using existing scene)
+	print("Verifying instance again...")
+
 	if credits_scene:
 		print("✅ Credits screen preloaded successfully")
 		var instance = credits_scene.instance()
@@ -29,4 +29,5 @@ func _ready():
 	else:
 		print("❌ Failed to preload credits screen")
 	
-	quit()
+	get_tree().quit()
+

@@ -244,6 +244,7 @@ func _input(_event:InputEvent):
 	
 	if _event.is_action_pressed("ui_cancel"):
 		get_tree().quit()
+
 		
 	if _event.is_action_pressed("strafe_target"):
 		set_strafe_targeting()
