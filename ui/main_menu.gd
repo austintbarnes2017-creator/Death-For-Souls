@@ -1,11 +1,14 @@
 extends Control
 
+@onready var main_buttons = $MainMenuButtons
+@onready var title_container = $TitleContainer
 @onready var play_button = $MainMenuButtons/PlayButton
 @onready var credits_button = $MainMenuButtons/CreditsButton
 @onready var death_plus_button = $MainMenuButtons/DeathPlusButton
 @onready var admin_button = $AdminButton
 @onready var quit_button = $QuitButton
 @onready var animated_bg = $Background/AnimatedBackground
+
 
 const MAX_CHARACTER_SLOTS = 3
 const SAVE_FILE_PATH = "user://characters.json"
@@ -116,6 +119,14 @@ func load_character_data():
 			else:
 				print("Error parsing character data")
 
+func _toggle_main_ui(is_visible: bool):
+	main_buttons.visible = is_visible
+	title_container.visible = is_visible
+	quit_button.visible = is_visible
+	admin_button.visible = is_visible
+	# Background stays visible as a shared backdrop
+
+
 func _on_play_pressed():
 	# Create character selection screen
 	var char_selection_scene = preload("res://ui/character_selection.tscn").instantiate()
@@ -125,7 +136,8 @@ func _on_play_pressed():
 		if char_selection_scene.has_signal("character_selected"):
 			char_selection_scene.character_selected.connect(_on_character_chosen)
 		add_child(char_selection_scene)
-		visible = false
+		_toggle_main_ui(false)
+
 
 func _on_character_chosen(slot_index: int):
 	selected_slot_index = slot_index
@@ -145,14 +157,16 @@ func _on_credits_pressed():
 	var credits_scene = preload("res://ui/credits_screen_fixed.tscn").instantiate()
 	if credits_scene:
 		add_child(credits_scene)
-		visible = false
+		_toggle_main_ui(false)
+
 
 func _on_death_plus_pressed():
 	var death_plus_scene = preload("res://ui/death_plus_screen.tscn").instantiate()
 	if death_plus_scene:
 		death_plus_scene.back_to_main_menu.connect(_on_back_to_main_menu)
 		add_child(death_plus_scene)
-		visible = false
+		_toggle_main_ui(false)
+
 
 func _on_host_pressed():
 	NetworkManager.host_game()
@@ -170,7 +184,8 @@ func start_game():
 	get_tree().change_scene_to_file("res://demo_level/world_castle.tscn")
 
 func _on_back_to_main_menu():
-	visible = true
+	_toggle_main_ui(true)
+
 
 func _on_admin_pressed():
 	var admin_panel = preload("res://ui/admin_panel.tscn").instantiate()
