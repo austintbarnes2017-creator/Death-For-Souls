@@ -40,11 +40,16 @@ func _setup_network_ui():
 	stylebox.set_border_width_all(2)
 	stylebox.border_color = Color(0.3, 0.3, 0.5)
 	stylebox.set_corner_radius_all(10)
+	stylebox.content_margin_left = 25
+
+	stylebox.content_margin_right = 25
+	stylebox.content_margin_top = 25
+	stylebox.content_margin_bottom = 25
 	network_panel.add_theme_stylebox_override("panel", stylebox)
 	
 	var vbox = VBoxContainer.new()
 	vbox.add_theme_constant_override("separation", 15)
-	vbox.set_content_margin_all(25)
+
 	network_panel.add_child(vbox)
 	
 	var label = Label.new()

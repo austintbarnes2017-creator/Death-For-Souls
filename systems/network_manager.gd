@@ -67,7 +67,7 @@ func get_local_ip() -> String:
 			if ip.begins_with("192.168.") or ip.begins_with("10.") or ip.begins_with("172."):
 				return ip
 	return "127.0.0.1"
-	return "127.0.0.1"
+
 
 
 # Join an existing server
