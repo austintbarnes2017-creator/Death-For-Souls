@@ -47,11 +47,13 @@ func activate_death_plus_effect():
 	
 	# Find all enemies in the area
 	var space_state = get_world_3d().direct_space_state
-	var query = PhysicsShapeQueryParameters3D.create(
-		SphereShape3D.new().radius, 
-		global_transform, 
-		32  # collision mask for enemies
-	)
+	var query = PhysicsShapeQueryParameters3D.new()
+	var sphere = SphereShape3D.new()
+	sphere.radius = area_radius
+	query.shape = sphere
+	query.transform = global_transform
+	query.collision_mask = 32  # collision mask for enemies
+
 	
 	var results = space_state.intersect_shape(query)
 	
