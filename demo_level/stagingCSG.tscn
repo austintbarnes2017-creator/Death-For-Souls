@@ -180,14 +180,16 @@ size = Vector3(7.14069, 13.16, 3.54053)
 material = ExtResource("1_cuay2")
 
 [node name="RampToCity" type="CSGBox3D" parent="CSGBox3D"]
-transform = Transform3D(1, 0, 0, 0, 0.447214, -0.894427, 0, 0.894427, 0.447214, 3.23, 1, 11.75)
-size = Vector3(8, 0.5, 20)
+transform = Transform3D(1, 0, 0, 0, 0.447214, -0.894427, 0, 0.894427, 0.447214, 3.23, 0.5, 11.75)
+size = Vector3(4, 0.3, 10)
 material = SubResource("StandardMaterial3D_dgj8o")
+use_collision = true
 
 [node name="PathToCity" type="CSGBox3D" parent="CSGBox3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, -0.25, 25)
 size = Vector3(6, 0.5, 40)
 material = SubResource("StandardMaterial3D_dgj8o")
+use_collision = true
 
 [node name="FrontGates" type="CSGCombiner3D" parent="CSGBox3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35, 5, 45)
@@ -196,16 +198,19 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35, 5, 45)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 0, 0)
 size = Vector3(3, 15, 3)
 material = ExtResource("1_cuay2")
+use_collision = true
 
 [node name="GateWallRight" type="CSGBox3D" parent="CSGBox3D/FrontGates"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0, 0)
 size = Vector3(3, 15, 3)
 material = ExtResource("1_cuay2")
+use_collision = true
 
 [node name="GateArch" type="CSGBox3D" parent="CSGBox3D/FrontGates"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8, 0)
 size = Vector3(15, 4, 3)
 material = ExtResource("1_cuay2")
+use_collision = true
 
 [node name="GateArchOpening" type="CSGBox3D" parent="CSGBox3D/FrontGates/GateArch"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
@@ -263,6 +268,7 @@ material = ExtResource("2_pn36w")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
 size = Vector3(80, 1, 60)
 material = SubResource("StandardMaterial3D_dgj8o")
+use_collision = true
 
 [node name="CSGBox3D3" type="CSGBox3D" parent="CSGBox3D/City/CSGBox3D4"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.30327, 0)
