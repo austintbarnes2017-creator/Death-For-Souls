@@ -41,7 +41,8 @@ func end_guard() -> void:
 	parry_active = false
 	player.current_state = 1 # state.FREE
 
-func hit(_who: Node3D, _by_what: Object) -> void:
+func hit(_who: Node3D, _by_what: EquipmentResource) -> void:
+
 	if not can_be_hurt:
 		return
 		

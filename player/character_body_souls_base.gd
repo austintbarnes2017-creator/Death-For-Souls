@@ -61,7 +61,7 @@ var secondary_action
 ## Gadgets and guarding equipment system that manages moving nodes from the 
 ## off-hand, to their hip location
 @export var gadget_system : EquipmentSystem
-## A helper variable, tracks the current gadget type for easier referencing from
+## A helper variable, tracks current gadget type for easier referencing from
 ## the anim_state_tree
 var gadget_type :String = "SHIELD" :
 	set(val):
@@ -74,6 +74,11 @@ signal gadget_changed
 signal gadget_change_ended
 signal gadget_started
 signal gadget_activated
+
+## Death Plus system
+var death_plus_sword: Node3D = null
+var has_death_plus: bool = true  # Currently free
+var death_plus_equipped: bool = false
 
 
 
@@ -166,6 +171,9 @@ func _ready():
 		health_system.died.connect(death)
 		
 	# Components handle their own internal timers
+	
+	# Initialize Death Plus system
+	initialize_death_plus_sword()
 	
 	# Load character data from file
 	load_character_data_from_file()
@@ -260,6 +268,8 @@ func _input(_event:InputEvent):
 				weapon_change()
 			elif _event.is_action_pressed("change_secondary"):
 				gadget_change()
+			elif _event.is_action_pressed("equip_death_plus"):
+				equip_death_plus_sword()
 			elif _event.is_action_pressed("admin_panel"):
 				toggle_admin_panel()
 			elif _event.is_action_pressed("shift_lock"):
@@ -499,7 +509,7 @@ func use_item():
 	if current_state == state.DYNAMIC_ACTION:
 		current_state = state.FREE
 
-func hit(_who, _by_what):
+func hit(_who, _by_what: EquipmentResource):
 	if combat_component:
 		combat_component.hit(_who, _by_what)
 
@@ -532,20 +542,26 @@ func death():
 # Character system integration functions
 func load_character_data_from_file():
 	var character_file_path = "user://current_character.json"
+	print("Attempting to load character from: ", character_file_path)
+	
 	if FileAccess.file_exists(character_file_path):
 		var file = FileAccess.open(character_file_path, FileAccess.READ)
 		if file:
 			var json_string = file.get_as_text()
 			file.close()
+			print("Character file content: ", json_string)
 			
 			var json = JSON.new()
 			var parse_result = json.parse(json_string)
 			
 			if parse_result == OK:
 				var char_info = json.data
+				print("Character data parsed successfully: ", char_info)
 				load_character_data(char_info)
 			else:
-				print("Error parsing character data")
+				print("Error parsing character data, error: ", parse_result)
+	else:
+		print("Character file does not exist: ", character_file_path)
 
 func load_character_data(char_info: Dictionary):
 	character_data = char_info
@@ -565,6 +581,8 @@ func load_character_data(char_info: Dictionary):
 			give_weapon(weapon)
 
 func apply_character_material(material_path: String):
+	print("Attempting to apply material: ", material_path)
+	
 	if not ResourceLoader.exists(material_path):
 		print("Material not found: " + material_path)
 		return
@@ -574,17 +592,22 @@ func apply_character_material(material_path: String):
 		print("Failed to load material: " + material_path)
 		return
 	
+	print("Material loaded successfully: ", material)
+	
 	# Find the character mesh and apply material
 	var character_mesh = %GeneralSkeleton if has_node("%GeneralSkeleton") else find_child("GeneralSkeleton", true, false)
 	if character_mesh:
+		print("Found character skeleton, applying material to children")
 		# Apply material to all mesh instances in the skeleton
 		apply_material_to_children(character_mesh, material)
 	else:
 		print("Character skeleton not found")
 
 func apply_material_to_children(node: Node, material: Material):
+	print("Applying material to children of node: ", node.name)
 	for child in node.get_children():
 		if child is MeshInstance3D:
+			print("Applying material to mesh: ", child.name)
 			child.material_override = material
 		elif child.get_child_count() > 0:
 			apply_material_to_children(child, material)
@@ -595,7 +618,7 @@ func set_admin_status(is_admin_enabled: bool):
 	else:
 		print("Admin privileges revoked")
 		if fly_component and fly_component.active:
-			fly_component.disable()
+			fly_component.toggle()
 
 func toggle_fly_mode():
 	if fly_component:
@@ -633,6 +656,39 @@ func toggle_shift_lock():
 	else:
 		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 		print("Mouse captured for gameplay")
+
+# Death Plus system functions
+func initialize_death_plus_sword():
+	if has_death_plus:
+		# Create Death Plus sword but don't equip initially
+		var sword_scene = preload("res://player/equipment_system/equipment/red_skull_sword.tscn")
+		death_plus_sword = sword_scene.instantiate()
+		add_child(death_plus_sword)
+		death_plus_sword.visible = false  # Hidden on back initially
+		print("Death Plus sword initialized and hidden on back")
+
+func equip_death_plus_sword():
+	if not has_death_plus:
+		print("Death Plus not available!")
+		return
+		
+	if death_plus_equipped:
+		# Unequip if already equipped
+		unequip_death_plus_sword()
+	else:
+		# Equip Death Plus sword
+		if death_plus_sword:
+			death_plus_sword.visible = true
+			death_plus_sword.equip_weapon(self)
+			death_plus_equipped = true
+			print("Death Plus sword equipped! Press R again to unequip.")
+
+func unequip_death_plus_sword():
+	if death_plus_sword and death_plus_equipped:
+		death_plus_sword.unequip_weapon()
+		death_plus_sword.visible = false
+		death_plus_equipped = false
+		print("Death Plus sword unequipped.")
 
 # Admin functionality
 func give_weapon(new_weapon_type: String):

@@ -52,9 +52,23 @@ func host_game(port: int = DEFAULT_PORT) -> Error:
 	# Track the host as peer ID 1 (don't try to spawn yet - world isn't loaded)
 	current_peers[1] = {"id": 1}
 	
+	var local_ip = get_local_ip()
 	print("NetworkManager: Server started on port ", port)
+	print("NetworkManager: Local LAN IP: ", local_ip)
+	
 	connection_established.emit()
 	return OK
+
+## Helper to find the local IPv4 address
+func get_local_ip() -> String:
+	for ip in IP.get_local_addresses():
+		# Filter for private IPv4 ranges: 192.168.x.x, 10.x.x.x, 172.16-31.x.x
+		if ip.count(".") == 3 and not ip.begins_with("127.") and not ip.begins_with("169.254."):
+			if ip.begins_with("192.168.") or ip.begins_with("10.") or ip.begins_with("172."):
+				return ip
+	return "127.0.0.1"
+	return "127.0.0.1"
+
 
 # Join an existing server
 func join_game(address: String = "127.0.0.1", port: int = DEFAULT_PORT) -> Error:

@@ -6,7 +6,8 @@ signal loading_complete
 @onready var loading_label = $LoadingPanel/VBoxContainer/LoadingLabel
 
 var loading_progress: float = 0.0
-var is_loading_finished: bool = false
+var is_loading_complete: bool = false
+
 
 func _ready():
 	# Start hidden
@@ -16,7 +17,8 @@ func _ready():
 func start_loading():
 	visible = true
 	loading_progress = 0.0
-	is_loading_finished = false
+	is_loading_complete = false
+
 	progress_bar.value = 0.0
 	loading_label.text = "Loading Character..."
 	
@@ -44,7 +46,8 @@ func _update_progress(progress: float):
 		loading_label.text = "Almost Ready..."
 
 func _on_loading_finished():
-	is_loading_finished = true
+	is_loading_complete = true
+
 	loading_label.text = "Complete!"
 	progress_bar.value = 100.0
 	

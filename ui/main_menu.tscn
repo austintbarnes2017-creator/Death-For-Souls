@@ -52,49 +52,39 @@ theme = ExtResource("2_theme")
 horizontal_alignment = 1
 modulate = Color(0.8, 0.8, 0.8, 1)
 
-[node name="CharacterSelection" type="VBoxContainer" parent="."]
+[node name="MainMenuButtons" type="VBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -400.0
-offset_top = -200.0
-offset_right = 400.0
-offset_bottom = 200.0
+offset_left = -150.0
+offset_top = -150.0
+offset_right = 150.0
+offset_bottom = 150.0
 
-[node name="CharacterTitle" type="Label" parent="CharacterSelection"]
+[node name="PlayButton" type="Button" parent="MainMenuButtons"]
 layout_mode = 2
-text = "SELECT CHARACTER"
+custom_minimum_size = Vector2(300, 80)
+size_flags_horizontal = 3
+text = "PLAY"
 theme = ExtResource("2_theme")
-horizontal_alignment = 1
-modulate = Color(1, 0.8, 0.4, 1)
 
-[node name="CharacterGrid" type="GridContainer" parent="CharacterSelection"]
+[node name="CreditsButton" type="Button" parent="MainMenuButtons"]
 layout_mode = 2
-columns = 3
-
-[node name="Slot1" type="Button" parent="CharacterSelection/CharacterGrid"]
-layout_mode = 2
+custom_minimum_size = Vector2(300, 80)
 size_flags_horizontal = 3
-custom_minimum_size = Vector2(200, 150)
-text = "SLOT 1
-NEW CHARACTER"
+text = "CREDITS"
+theme = ExtResource("2_theme")
 
-[node name="Slot2" type="Button" parent="CharacterSelection/CharacterGrid"]
+[node name="DeathPlusButton" type="Button" parent="MainMenuButtons"]
 layout_mode = 2
+custom_minimum_size = Vector2(300, 80)
 size_flags_horizontal = 3
-custom_minimum_size = Vector2(200, 150)
-text = "SLOT 2
-NEW CHARACTER"
-
-[node name="Slot3" type="Button" parent="CharacterSelection/CharacterGrid"]
-layout_mode = 2
-size_flags_horizontal = 3
-custom_minimum_size = Vector2(200, 150)
-text = "SLOT 3
-NEW CHARACTER"
+text = "DEATH PLUS"
+theme = ExtResource("2_theme")
+modulate = Color(1, 0.2, 0.2, 1)
 
 [node name="QuitButton" type="Button" parent="."]
 layout_mode = 1

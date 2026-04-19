@@ -1,0 +1,6 @@
+; Engine configuration file.
+
+[application]
+
+config/name="Test Project"
+run/main_scene="res://test_credits_load.gd"

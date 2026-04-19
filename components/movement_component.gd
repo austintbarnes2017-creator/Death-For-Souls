@@ -440,7 +440,7 @@ func start_ladder(top_or_bottom, mount_transform):
 	# The tweening and state transition still happens in the Hub 
 	# because it involves global_transform and specific sequence timing
 	# Or we can move it here if we want full isolation.
-	var anim_len = player.anim_length if player.has_variable("anim_length") else 0.5
+	var anim_len = player.anim_length if "anim_length" in player else 0.5
 	var tween = get_tree().create_tween()
 	tween.tween_property(player, "global_transform", mount_transform, anim_len * 0.4)
 	await tween.finished
@@ -450,7 +450,7 @@ func exit_ladder(exit_loc):
 	player.current_state = 2 # state.STATIC_ACTION
 	player.ladder_finished.emit(exit_loc)
 	var dismount_pos
-	var anim_len = player.anim_length if player.has_variable("anim_length") else 0.5
+	var anim_len = player.anim_length if "anim_length" in player else 0.5
 	
 	match exit_loc:
 		"TOP":

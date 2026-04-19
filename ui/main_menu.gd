@@ -1,6 +1,8 @@
 extends Control
 
-@onready var character_grid = $CharacterSelection/CharacterGrid
+@onready var play_button = $MainMenuButtons/PlayButton
+@onready var credits_button = $MainMenuButtons/CreditsButton
+@onready var death_plus_button = $MainMenuButtons/DeathPlusButton
 @onready var admin_button = $AdminButton
 @onready var quit_button = $QuitButton
 @onready var animated_bg = $Background/AnimatedBackground
@@ -10,17 +12,16 @@ const SAVE_FILE_PATH = "user://characters.json"
 
 var character_data = {}
 var network_panel: PanelContainer
+var ip_input: LineEdit
 var selected_slot_index: int = -1
 
 func _ready():
 	load_character_data()
-	update_character_slots()
 	
 	# Connect button signals
-	for i in range(MAX_CHARACTER_SLOTS):
-		var slot_button = character_grid.get_child(i)
-		slot_button.pressed.connect(_on_character_slot_pressed.bind(i))
-	
+	play_button.pressed.connect(_on_play_pressed)
+	credits_button.pressed.connect(_on_credits_pressed)
+	death_plus_button.pressed.connect(_on_death_plus_pressed)
 	admin_button.pressed.connect(_on_admin_pressed)
 	quit_button.pressed.connect(_on_quit_pressed)
 	
@@ -33,22 +34,53 @@ func _setup_network_ui():
 	network_panel.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	network_panel.anchors_preset = Control.PRESET_CENTER
 	
+	# Professional Styling
+	var stylebox = StyleBoxFlat.new()
+	stylebox.bg_color = Color(0.1, 0.1, 0.15, 0.95)
+	stylebox.set_border_width_all(2)
+	stylebox.border_color = Color(0.3, 0.3, 0.5)
+	stylebox.set_corner_radius_all(10)
+	network_panel.add_theme_stylebox_override("panel", stylebox)
+	
 	var vbox = VBoxContainer.new()
-	vbox.add_theme_constant_override("separation", 20)
+	vbox.add_theme_constant_override("separation", 15)
+	vbox.set_content_margin_all(25)
 	network_panel.add_child(vbox)
 	
 	var label = Label.new()
-	label.text = "SELECT CONNECTION MODE"
+	label.text = "NETWORK SETUP"
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	vbox.add_child(label)
 	
+	# Host IP Info
+	var ip_info = Label.new()
+	ip_info.text = "Your Local IP: " + NetworkManager.get_local_ip()
+	ip_info.modulate = Color(0.6, 0.8, 1.0)
+	ip_info.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	vbox.add_child(ip_info)
+	
 	var host_btn = Button.new()
 	host_btn.text = "HOST GAME (Server)"
+	host_btn.custom_minimum_size = Vector2(250, 40)
 	host_btn.pressed.connect(_on_host_pressed)
 	vbox.add_child(host_btn)
 	
+	var spacer = Control.new()
+	spacer.custom_minimum_size = Vector2(0, 10)
+	vbox.add_child(spacer)
+	
+	var join_label = Label.new()
+	join_label.text = "Join Address:"
+	vbox.add_child(join_label)
+	
+	ip_input = LineEdit.new()
+	ip_input.placeholder_text = "127.0.0.1"
+	ip_input.text = "127.0.0.1"
+	vbox.add_child(ip_input)
+	
 	var join_btn = Button.new()
-	join_btn.text = "JOIN GAME (Direct Connect)"
+	join_btn.text = "JOIN GAME"
+	join_btn.custom_minimum_size = Vector2(250, 40)
 	join_btn.pressed.connect(_on_join_pressed)
 	vbox.add_child(join_btn)
 	
@@ -59,7 +91,7 @@ func _setup_network_ui():
 	
 	var cancel_btn = Button.new()
 	cancel_btn.text = "CANCEL"
-	cancel_btn.pressed.connect(func(): network_panel.visible = false; $CharacterSelection.visible = true)
+	cancel_btn.pressed.connect(func(): network_panel.visible = false; visible = true)
 	vbox.add_child(cancel_btn)
 	
 	add_child(network_panel)
@@ -79,112 +111,65 @@ func load_character_data():
 			else:
 				print("Error parsing character data")
 
-func save_character_data():
-	var file = FileAccess.open(SAVE_FILE_PATH, FileAccess.WRITE)
-	if file:
-		var json_string = JSON.stringify(character_data)
-		file.store_string(json_string)
-		file.close()
+func _on_play_pressed():
+	# Create character selection screen
+	var char_selection_scene = preload("res://ui/character_selection.tscn").instantiate()
+	if char_selection_scene:
+		char_selection_scene.back_to_main_menu.connect(_on_back_to_main_menu)
+		# Wrap selection signal to our networking flow
+		if char_selection_scene.has_signal("character_selected"):
+			char_selection_scene.character_selected.connect(_on_character_chosen)
+		add_child(char_selection_scene)
+		visible = false
 
-func update_character_slots():
-	for i in range(MAX_CHARACTER_SLOTS):
-		var slot_button = character_grid.get_child(i)
-		var slot_key = "slot_" + str(i + 1)
-		
-		if slot_key in character_data and character_data[slot_key]:
-			var char_info = character_data[slot_key]
-			slot_button.text = "SLOT %d\n%s\nLevel %d\n%s" % [i + 1, char_info.name.to_upper(), char_info.level, char_info.gender.capitalize()]
-			slot_button.modulate = Color(1, 1, 1, 1)
-		else:
-			slot_button.text = "SLOT %d\nNEW CHARACTER" % (i + 1)
-			slot_button.modulate = Color(0.7, 0.7, 0.7, 1)
-
-func _on_character_slot_pressed(slot_index: int):
-	var slot_key = "slot_" + str(slot_index + 1)
-	
-	if slot_key in character_data and character_data[slot_key]:
-		# Load existing character
-		load_character(slot_index)
-	else:
-		# Create new character
-		open_character_creation(slot_index)
-
-func load_character(slot_index: int):
-	var slot_key = "slot_" + str(slot_index + 1)
-	var char_info = character_data[slot_key]
-	
-	# Store character data for the game scene to load
-	# This will be loaded by the player controller when the scene starts
-	var character_file = FileAccess.open("user://current_character.json", FileAccess.WRITE)
-	if character_file:
-		var json_string = JSON.stringify(char_info)
-		character_file.store_string(json_string)
-		character_file.close()
-	
-	# Instead of changing scene immediately, show networking options
+func _on_character_chosen(slot_index: int):
 	selected_slot_index = slot_index
-	$CharacterSelection.visible = false
+	# Store character data for the session
+	var slot_key = "slot_" + str(slot_index + 1)
+	if character_data.has(slot_key):
+		var char_info = character_data[slot_key]
+		var character_file = FileAccess.open("user://current_character.json", FileAccess.WRITE)
+		if character_file:
+			character_file.store_string(JSON.stringify(char_info))
+			character_file.close()
+	
+	# Show network options after character is picked
 	network_panel.visible = true
+
+func _on_credits_pressed():
+	var credits_scene = preload("res://ui/credits_screen_fixed.tscn").instantiate()
+	if credits_scene:
+		add_child(credits_scene)
+		visible = false
+
+func _on_death_plus_pressed():
+	var death_plus_scene = preload("res://ui/death_plus_screen.tscn").instantiate()
+	if death_plus_scene:
+		death_plus_scene.back_to_main_menu.connect(_on_back_to_main_menu)
+		add_child(death_plus_scene)
+		visible = false
 
 func _on_host_pressed():
 	NetworkManager.host_game()
 	start_game()
 
 func _on_join_pressed():
-	NetworkManager.join_game("127.0.0.1")
-	# Join game will spawn us via the PeerConnected signal if implemented, 
-	# but we still need to load the world scene locally.
+	var target_ip = ip_input.text if ip_input else "127.0.0.1"
+	NetworkManager.join_game(target_ip)
 	start_game()
 
 func _on_solo_pressed():
-	# In solo, we don't initialize NetworkManager
 	start_game()
 
 func start_game():
-	# Change to game scene
 	get_tree().change_scene_to_file("res://demo_level/world_castle.tscn")
 
-func open_character_creation(slot_index: int):
-	print("Opening character creation for slot: ", slot_index)
-	
-	# Load character creation scene
-	var creation_scene = preload("res://ui/character_creation.tscn").instantiate()
-	if creation_scene:
-		print("Character creation scene instantiated successfully")
-		creation_scene.slot_index = slot_index
-		creation_scene.character_created.connect(_on_character_created)
-		
-		# Add as child and ensure it's on top
-		add_child(creation_scene)
-		move_child(creation_scene, get_child_count() - 1)  # Move to top
-		# Hide main menu UI elements individually so children stay visible
-		$Background.visible = false
-		$TitleContainer.visible = false
-		$CharacterSelection.visible = false
-		$QuitButton.visible = false
-		$AdminButton.visible = false
-		
-		creation_scene.visible = true
-		print("Character creation scene added as child and made visible")
-	else:
-		print("ERROR: Failed to instantiate character creation scene!")
-
-func _on_character_created(slot_index: int, character_info: Dictionary):
-	var slot_key = "slot_" + str(slot_index + 1)
-	character_data[slot_key] = character_info
-	save_character_data()
-	update_character_slots()
-	# Restore main menu UI
-	$Background.visible = true
-	$TitleContainer.visible = true
-	$CharacterSelection.visible = true
-	$QuitButton.visible = true
-	$AdminButton.visible = true
+func _on_back_to_main_menu():
+	visible = true
 
 func _on_admin_pressed():
 	var admin_panel = preload("res://ui/admin_panel.tscn").instantiate()
 	add_child(admin_panel)
-	# Don't hide main menu - admin panel should be overlay
 
 func _on_quit_pressed():
 	get_tree().quit()
