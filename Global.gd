@@ -4,6 +4,7 @@ extends Node
 var current_character: Dictionary = {}
 var is_admin: bool = false
 var admin_permissions: Dictionary = {}
+var death_plus_purchased: bool = false
 
 signal character_data_loaded
 signal admin_status_changed
